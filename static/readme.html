@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shinobi. — Read Me</title>
+<style>
+@font-face {
+  font-family: 'Molgan';
+  src: url('/static/fonts/Molgan-Regular.otf') format('opentype'),
+       url('/static/fonts/Molgan-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+:root {
+  --bg: #1c1b1f;
+  --bg-soft: #232227;
+  --panel: #28272c;
+  --panel-2: #2e2d33;
+  --purple: #8b5cf6;
+  --red: #ff4d5e;
+  --green: #34d399;
+  --text: #f3f1f7;
+  --muted: #9b96a8;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Molgan', Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 999; pointer-events: none;
+  opacity: 0.05; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 62px; padding: 0 24px; background: var(--bg-soft);
+}
+.logo {
+  font-weight: 700; font-size: 16px; letter-spacing: 0.02em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text);
+}
+.logo-mark { width: 28px; height: 28px; border-radius: 6px; display: inline-flex; overflow: hidden; }
+.logo-mark img { width: 100%; height: 100%; object-fit: cover; }
+.nav-links { display: flex; gap: 20px; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+
+.wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 100px; position: relative; z-index: 1; }
+h1 { font-size: clamp(32px, 5vw, 48px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 4px; }
+.sub { color: var(--muted); margin: 0 0 40px; font-size: 14px; }
+h2 {
+  font-size: 22px; font-weight: 700; margin: 40px 0 12px;
+  padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; color: var(--purple); }
+p, li { font-size: 14px; line-height: 1.7; color: var(--text); }
+ul, ol { padding-left: 22px; }
+.accent { color: var(--red); font-weight: 700; }
+.panel {
+  background: var(--panel); border: 1px solid #ffffff; border-radius: 6px;
+  padding: 16px 20px; margin: 16px 0;
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+th { color: var(--muted); font-weight: 600; }
+code {
+  background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px;
+  font-family: monospace; font-size: 12.5px;
+}
+.tag { display: inline-block; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); border-radius: 6px; padding: 3px 12px; font-size: 12px; color: #d4c8ff; margin: 2px 4px 2px 0; }
+.status { font-size: 12px; padding: 3px 10px; border-radius: 6px; border: 1px solid #ffffff; }
+.status.live { color: var(--green); }
+.status.soon { color: var(--muted); }
+footer { text-align: center; color: var(--muted); font-size: 13px; padding: 40px 24px 60px; position: relative; z-index: 1; }
+</style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="logo"><span class="logo-mark"><img src="/logo-final.png" alt="Shinobi"></span> Shinobi.</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/#how-it-works">How it works</a>
+      <a href="/app.html">Create</a>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <h1>Read Me</h1>
+    <p class="sub">What Shinobi does, how it works, and what's coming next.</p>
+
+    <h2>What is Shinobi?</h2>
+    <p>
+      Shinobi turns one long-form video into multiple <span class="accent">short-form, vertical, subtitled clips</span> —
+      automatically. Upload a video or paste a YouTube link, and Shinobi finds the best moments,
+      cuts them into clips, removes dead air, reformats them for Shorts/Reels/TikTok, burns in
+      animated subtitles, and writes ready-to-post titles and descriptions for each clip.
+    </p>
+
+    <h2>How it works</h2>
+    <ol>
+      <li><strong>Transcribe</strong> — the audio is transcribed with word-level timing.</li>
+      <li><strong>Find moments</strong> — an AI model scans the transcript and picks the strongest 45–60 second segments based on hook strength, information density, and how well they stand alone.</li>
+      <li><strong>Clip</strong> — those segments are cut out of the source video.</li>
+      <li><strong>Remove silence</strong> — dead air and pauses are trimmed from each clip.</li>
+      <li><strong>Reformat to vertical</strong> — each clip is reframed to a 9:16 aspect ratio, automatically keeping faces in frame where possible.</li>
+      <li><strong>Add subtitles</strong> — animated, word-by-word captions are burned into the video.</li>
+      <li><strong>Generate metadata</strong> — a title, description, tags, and a Reddit-friendly framing are generated for each clip.</li>
+    </ol>
+    <p>
+      You can watch progress live as each step runs, then preview, download, edit the
+      generated copy, and post the finished clips.
+    </p>
+
+    <h2>Customisation options</h2>
+    <p>Before processing, you can tune the output:</p>
+    <table>
+      <tr><th>Option</th><th>Description</th></tr>
+      <tr><td>Tone</td><td>Casual, professional, hype, educational, or funny</td></tr>
+      <tr><td>Target audience</td><td>Who the content is for</td></tr>
+      <tr><td>Niche</td><td>Topic/industry context for better titles and tags</td></tr>
+      <tr><td>Call to action</td><td>e.g. "follow for more"</td></tr>
+      <tr><td>Number of clips</td><td>How many moments to extract (default: 3)</td></tr>
+      <tr><td>Platforms</td><td>Which platforms to prep / post for</td></tr>
+    </table>
+
+    <h2>Supported platforms</h2>
+    <div class="panel">
+      <p style="margin:0 0 10px;">
+        <span class="tag">YouTube</span>
+        <span class="tag">Twitter / X</span>
+        <span class="tag">Reddit</span>
+      </p>
+      <p style="margin:0;">
+        Connect your accounts from the app page to post finished clips directly.
+        <span class="status soon">One-click posting is coming soon</span> — for now, clips and
+        metadata can be downloaded and posted manually.
+      </p>
+    </div>
+
+    <h2>Supported input</h2>
+    <ul>
+      <li>Video file upload — <code>.mp4</code>, <code>.mov</code>, <code>.avi</code>, <code>.mkv</code></li>
+      <li>YouTube URL</li>
+    </ul>
+
+    <h2>Output</h2>
+    <p>For each clip you get:</p>
+    <ul>
+      <li>A vertical (9:16), subtitled video file</li>
+      <li>A generated title, description, and tags</li>
+      <li>Reddit-specific title and post text</li>
+      <li>Bulk download and "copy all metadata" actions</li>
+    </ul>
+    <p style="color:var(--muted); font-size: 13px;">
+      Generated files are temporary and are automatically cleared an hour after processing finishes.
+    </p>
+
+    <h2>Status</h2>
+    <table>
+      <tr><th>Feature</th><th>Status</th></tr>
+      <tr><td>Upload / YouTube import</td><td><span class="status live">Live</span></td></tr>
+      <tr><td>Transcription</td><td><span class="status live">Live</span></td></tr>
+      <tr><td>Moment detection</td><td><span class="status live">Live</span></td></tr>
+      <tr><td>Clipping &amp; silence removal</td><td><span class="status live">Live</span></td></tr>
+      <tr><td>Vertical reformatting</td><td><span class="status live">Live</span></td></tr>
+      <tr><td>Auto subtitles</td><td><span class="status live">Live</span></td></tr>
+      <tr><td>Metadata generation</td><td><span class="status live">Live</span></td></tr>
+      <tr><td>Direct posting (YouTube / X / Reddit)</td><td><span class="status soon">Coming soon</span></td></tr>
+    </table>
+  </div>
+
+  <footer>Shinobi. — repurpose your video, instantly.</footer>
+</body>
+</html>

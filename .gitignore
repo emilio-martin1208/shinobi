@@ -1,0 +1,17 @@
+# Environment & secrets
+.env
+tokens.db
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# App runtime data
+uploads/
+output/
+server.log
+
+# OS
+.DS_Store

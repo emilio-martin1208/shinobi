@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shinobi. — Repurpose a video</title>
+<style>
+@font-face {
+  font-family: 'Molgan';
+  src: url('/static/fonts/Molgan-Regular.otf') format('opentype'),
+       url('/static/fonts/Molgan-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+  :root {
+    --bg: #1c1b1f;
+    --bg-soft: #232227;
+    --panel: #28272c;
+    --panel-2: #2e2d33;
+    --border: #3a393f;
+    --purple: #8b5cf6;
+    --purple-2: #6d28d9;
+    --red: #ff4d5e;
+    --red-soft: #ff6b6b;
+    --charcoal: #35343a;
+    --green: #34d399;
+    --text: #f3f1f7;
+    --muted: #9b96a8;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Molgan', Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== Grain overlay ===== */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ===== Nav ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 62px;
+    padding: 0 24px;
+    background: var(--bg-soft);
+    border-bottom: none;
+  }
+  .logo {
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .logo-mark {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: inline-flex;
+    overflow: hidden;
+  }
+  .logo-mark img { width: 100%; height: 100%; object-fit: cover; }
+  .nav-links { display: flex; gap: 20px; align-items: center; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    background: var(--panel-2);
+    border: 1px solid #ffffff;
+    color: var(--text);
+    border-radius: 6px;
+    padding: 5px 14px; font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: background 0.2s, border-color 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .nav-cta:hover { background: var(--charcoal); border-color: var(--purple); }
+
+  /* ===== App section ===== */
+  .app-section {
+    position: relative; z-index: 1;
+    max-width: 1100px; margin: 0 auto 120px;
+    padding: 40px 24px 0;
+  }
+  .app-section .section-head { text-align: center; margin-bottom: 32px; }
+  .app-section .section-head h2 {
+    font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 10px;
+  }
+  .app-section .section-head p { color: var(--muted); margin: 0; }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid #ffffff;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .panel h3 {
+    margin: -16px -20px 16px;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.5);
+    background: var(--bg-soft);
+    border-radius: 6px 6px 0 0;
+  }
+
+  .platforms { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+  .platform { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); transition: background 0.3s, box-shadow 0.3s; }
+  .dot.connected { background: var(--green); box-shadow: 0 0 12px rgba(52,211,153,0.6); }
+
+  button { font-family: inherit; }
+  button.secondary, .toggle button, .btn-small {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid #ffffff;
+    color: var(--text);
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  button.secondary:hover, .toggle button:hover, .btn-small:hover { background: rgba(255,255,255,0.07); border-color: #3a3548; }
+  .panel button:not(.secondary):not(.toggle button) {
+    background: var(--purple);
+    color: white; border: none; border-radius: 6px;
+    padding: 10px 18px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 8px 24px -10px rgba(139,92,246,0.6);
+  }
+  .panel button:not(.secondary):not(.toggle button):hover { transform: translateY(-1px); }
+
+  .toggle { display: flex; gap: 8px; margin-bottom: 18px; }
+  .toggle button.active {
+    background: var(--purple);
+    border-color: transparent; color: white;
+  }
+
+  .dropzone {
+    border: 1.5px dashed #ffffff;
+    border-radius: 6px;
+    padding: 48px 24px;
+    text-align: center;
+    cursor: pointer;
+    color: var(--muted);
+    transition: border-color 0.2s, background 0.2s;
+    background: rgba(255,255,255,0.015);
+  }
+  .dropzone:hover { border-color: var(--purple); }
+  .dropzone.drag { border-color: var(--red); color: var(--text); background: rgba(139,92,246,0.06); }
+
+  input[type=text], input[type=url], textarea, select {
+    width: 100%;
+    background: #0e0c14;
+    border: 1px solid #ffffff;
+    color: var(--text);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type=text]:focus, input[type=url]:focus, textarea:focus, select:focus { border-color: var(--purple); }
+
+  .row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+  .field { flex: 1; min-width: 160px; }
+  label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; letter-spacing: 0.01em; }
+  details summary { cursor: pointer; color: var(--muted); margin-bottom: 12px; font-size: 14px; user-select: none; }
+  details summary:hover { color: var(--text); }
+
+  .steps { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .step { display: flex; align-items: center; gap: 12px; font-size: 14px; padding: 4px 0; }
+  .step .icon {
+    width: 24px; height: 24px; border-radius: 50%; text-align: center;
+    display: flex; align-items: center; justify-content: center; font-size: 12px;
+    border: 1px solid #ffffff; flex-shrink: 0;
+  }
+  .step.pending { color: var(--muted); }
+  .step.active { color: var(--text); }
+  .step.active .icon { border-color: var(--purple); animation: spin 1s linear infinite; }
+  .step.done { color: var(--text); }
+  .step.done .icon { background: var(--purple); border-color: transparent; color: white; }
+  .step.error { color: var(--red); }
+  .step.error .icon { background: var(--red); border-color: transparent; color: white; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  progress {
+    width: 100%; height: 8px; border-radius: 5px; overflow: hidden;
+    appearance: none; border: none;
+  }
+  progress::-webkit-progress-bar { background: var(--bg-soft); border-radius: 5px; }
+  progress::-webkit-progress-value { background: var(--purple); border-radius: 5px; }
+
+  .clips { display: flex; gap: 18px; flex-wrap: wrap; }
+  .clip-card {
+    background: var(--panel-2);
+    border: 1px solid #ffffff;
+    border-radius: 6px;
+    padding: 14px;
+    width: 280px;
+  }
+  .clip-card video { width: 100%; border-radius: 6px; background: black; aspect-ratio: 9/16; object-fit: cover; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .tag { background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); border-radius: 6px; padding: 3px 12px; font-size: 12px; color: #d4c8ff; }
+  .post-status { font-size: 12px; margin-top: 10px; display: flex; flex-direction: column; gap: 4px; color: var(--muted); }
+  .post-status a { color: var(--purple); }
+  .hidden { display: none; }
+  .debug { font-size: 12px; color: var(--muted); white-space: pre-wrap; max-height: 200px; overflow-y: auto; font-family: monospace; }
+
+  footer {
+    text-align: center; color: var(--muted); font-size: 13px;
+    padding: 40px 24px 60px; position: relative; z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="logo"><span class="logo-mark"><img src="/logo-final.png" alt="Shinobi"></span> Shinobi.</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/#how-it-works">How it works</a>
+      <a href="/readme.html">Read Me</a>
+    </div>
+  </nav>
+
+  <div class="app-section" id="app">
+    <div class="section-head">
+      <h2>Repurpose a video</h2>
+      <p>Upload a file or drop in a YouTube link to get started.</p>
+    </div>
+
+    <div class="panel platforms" id="platformBar">
+      <div class="platform"><span class="dot" id="dot-youtube"></span> YouTube <button class="secondary" onclick="connect('youtube')">Connect</button></div>
+      <div class="platform"><span class="dot" id="dot-twitter"></span> Twitter/X <button class="secondary" onclick="connect('twitter')">Connect</button></div>
+      <div class="platform"><span class="dot" id="dot-reddit"></span> Reddit <button class="secondary" onclick="connect('reddit')">Connect</button></div>
+    </div>
+
+    <div class="panel" id="inputPanel">
+      <div class="toggle">
+        <button id="tabFile" class="active" onclick="setMode('file')">Upload file</button>
+        <button id="tabUrl" onclick="setMode('url')">YouTube URL</button>
+      </div>
+
+      <div id="fileInput">
+        <div class="dropzone" id="dropzone">Drag & drop a video here, or click to browse<br><small>mp4, mov, avi, mkv</small></div>
+        <input type="file" id="fileElem" accept=".mp4,.mov,.avi,.mkv" class="hidden">
+      </div>
+
+      <div id="urlInput" class="hidden">
+        <div class="row">
+          <div class="field">
+            <label>YouTube URL</label>
+            <input type="url" id="ytUrl" placeholder="https://www.youtube.com/watch?v=...">
+          </div>
+          <div style="align-self:flex-end;"><button onclick="submitUrl()">Fetch</button></div>
+        </div>
+      </div>
+
+      <details style="margin-top:20px;">
+        <summary>Customisation</summary>
+        <div class="row">
+          <div class="field"><label>Tone</label>
+            <select id="tone">
+              <option value="casual">Casual</option>
+              <option value="professional">Professional</option>
+              <option value="hype">Hype</option>
+              <option value="educational">Educational</option>
+              <option value="funny">Funny</option>
+            </select>
+          </div>
+          <div class="field"><label>Target audience</label><input type="text" id="audience" placeholder="e.g. founders, creators"></div>
+          <div class="field"><label>Niche</label><input type="text" id="niche" placeholder="e.g. SaaS marketing"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>Call to action</label><input type="text" id="cta" placeholder="e.g. follow for more"></div>
+          <div class="field"><label>Number of clips</label>
+            <select id="numClips">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Platforms</label>
+            <div class="row" style="margin-bottom:0;">
+              <label><input type="checkbox" id="platYoutube" checked> YouTube</label>
+              <label><input type="checkbox" id="platTwitter" checked> Twitter</label>
+              <label><input type="checkbox" id="platReddit" checked> Reddit</label>
+            </div>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="panel hidden" id="progressPanel">
+      <h3>Processing...</h3>
+      <progress id="progressBar" value="0" max="100"></progress>
+      <div class="steps" id="stepsList"></div>
+      <details style="margin-top:16px;">
+        <summary>Debug logs</summary>
+        <div class="debug" id="debugLogs"></div>
+      </details>
+    </div>
+
+    <div class="panel hidden" id="resultsPanel">
+      <h3>Results</h3>
+      <div class="row">
+        <button onclick="downloadAll()">Download all clips</button>
+        <button class="secondary" onclick="copyAllMetadata()">Copy all metadata</button>
+        <button onclick="postAll()">Post to platforms</button>
+      </div>
+      <div class="clips" id="clips"></div>
+    </div>
+  </div>
+
+  <footer>Shinobi. — repurpose your video, instantly.</footer>
+
+<script>
+const STEP_LABELS = {
+  uploading: "Uploading",
+  transcribing: "Transcribing",
+  finding_moments: "Finding moments",
+  clipping: "Clipping",
+  removing_silence: "Removing silence",
+  reformatting: "Reformatting",
+  subtitles: "Adding subtitles",
+  metadata: "Generating metadata",
+  posting: "Posting",
+};
+const STEP_ICONS = { pending: "○", active: "◐", done: "✓", error: "✕" };
+
+let currentJobId = null;
+let pollInterval = null;
+let lastResult = null;
+
+function setMode(mode) {
+  document.getElementById('tabFile').classList.toggle('active', mode === 'file');
+  document.getElementById('tabUrl').classList.toggle('active', mode === 'url');
+  document.getElementById('fileInput').classList.toggle('hidden', mode !== 'file');
+  document.getElementById('urlInput').classList.toggle('hidden', mode !== 'url');
+}
+
+async function refreshAuthStatus() {
+  try {
+    const res = await fetch('/auth/status');
+    const json = await res.json();
+    if (json.success) {
+      for (const platform of ['youtube', 'twitter', 'reddit']) {
+        document.getElementById('dot-' + platform).classList.toggle('connected', !!json.data[platform]);
+      }
+    }
+  } catch (e) { /* ignore */ }
+}
+refreshAuthStatus();
+
+function connect(platform) {
+  const popup = window.open('/auth/' + platform, 'oauth_' + platform, 'width=500,height=700');
+  window.addEventListener('message', function handler(e) {
+    if (e.data && e.data.type === 'oauth_complete') {
+      window.removeEventListener('message', handler);
+      refreshAuthStatus();
+    }
+  });
+}
+
+function getOptions() {
+  return {
+    tone: document.getElementById('tone').value,
+    audience: document.getElementById('audience').value,
+    niche: document.getElementById('niche').value,
+    cta: document.getElementById('cta').value,
+    num_clips: parseInt(document.getElementById('numClips').value, 10),
+    platforms: [
+      ...(document.getElementById('platYoutube').checked ? ['youtube'] : []),
+      ...(document.getElementById('platTwitter').checked ? ['twitter'] : []),
+      ...(document.getElementById('platReddit').checked ? ['reddit'] : []),
+    ],
+  };
+}
+
+// Drag & drop / click upload
+const dropzone = document.getElementById('dropzone');
+const fileElem = document.getElementById('fileElem');
+dropzone.addEventListener('click', () => fileElem.click());
+dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('drag'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
+dropzone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropzone.classList.remove('drag');
+  if (e.dataTransfer.files.length) uploadFile(e.dataTransfer.files[0]);
+});
+fileElem.addEventListener('change', () => {
+  if (fileElem.files.length) uploadFile(fileElem.files[0]);
+});
+
+async function uploadFile(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('options', JSON.stringify(getOptions()));
+  startProgress();
+  try {
+    const res = await fetch('/upload', { method: 'POST', body: formData });
+    const json = await res.json();
+    if (!json.success) { alert(json.error); return; }
+    currentJobId = json.data.job_id;
+    pollStatus();
+  } catch (e) {
+    alert('Upload failed: ' + e);
+  }
+}
+
+async function submitUrl() {
+  const url = document.getElementById('ytUrl').value.trim();
+  if (!url) return;
+  startProgress();
+  try {
+    const res = await fetch('/url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, options: getOptions() }),
+    });
+    const json = await res.json();
+    if (!json.success) { alert(json.error); return; }
+    currentJobId = json.data.job_id;
+    pollStatus();
+  } catch (e) {
+    alert('Fetch failed: ' + e);
+  }
+}
+
+function startProgress() {
+  document.getElementById('progressPanel').classList.remove('hidden');
+  document.getElementById('resultsPanel').classList.add('hidden');
+  renderSteps({});
+  document.getElementById('progressPanel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function renderSteps(steps) {
+  const list = document.getElementById('stepsList');
+  list.innerHTML = '';
+  for (const [key, label] of Object.entries(STEP_LABELS)) {
+    const state = steps[key] || 'pending';
+    const div = document.createElement('div');
+    div.className = 'step ' + state;
+    div.innerHTML = `<span class="icon">${STEP_ICONS[state]}</span> ${label}`;
+    list.appendChild(div);
+  }
+}
+
+function pollStatus() {
+  if (pollInterval) clearInterval(pollInterval);
+  pollInterval = setInterval(async () => {
+    try {
+      const res = await fetch('/status/' + currentJobId);
+      const json = await res.json();
+      if (!json.success) return;
+      const data = json.data;
+      document.getElementById('progressBar').value = data.progress;
+      renderSteps(data.steps);
+      document.getElementById('debugLogs').textContent = data.logs.join('\n');
+      if (data.status === 'error') {
+        clearInterval(pollInterval);
+        alert('Pipeline error: ' + data.error);
+      } else if (data.status === 'done') {
+        clearInterval(pollInterval);
+        loadResults();
+      }
+    } catch (e) { /* ignore transient errors */ }
+  }, 2000);
+}
+
+async function loadResults() {
+  const res = await fetch('/result/' + currentJobId);
+  const json = await res.json();
+  if (!json.success) { alert(json.error); return; }
+  lastResult = json.data;
+  renderResults();
+  document.getElementById('resultsPanel').classList.remove('hidden');
+  document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function renderResults() {
+  const container = document.getElementById('clips');
+  container.innerHTML = '';
+  lastResult.clips.forEach((c, i) => {
+    const card = document.createElement('div');
+    card.className = 'clip-card';
+    const tags = (c.metadata.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+    const postStatus = Object.entries(c.post_status || {}).map(([platform, status]) => {
+      if (status.success) {
+        return `<div>${platform}: ✓ <a href="${status.url || '#'}" target="_blank">posted</a></div>`;
+      }
+      return `<div>${platform}: ✕ ${status.error || 'failed'}</div>`;
+    }).join('');
+    card.innerHTML = `
+      <video src="${c.video_url}" controls muted loop></video>
+      <label>Title</label>
+      <input type="text" value="${escapeAttr(c.metadata.title)}" data-idx="${i}" data-field="title">
+      <label>Description</label>
+      <textarea rows="2" data-idx="${i}" data-field="description">${c.metadata.description || ''}</textarea>
+      <div class="tags">${tags}</div>
+      <div class="post-status">${postStatus}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function escapeAttr(s) {
+  return (s || '').replace(/"/g, '&quot;');
+}
+
+document.addEventListener('input', (e) => {
+  if (!lastResult) return;
+  const idx = e.target.getAttribute('data-idx');
+  const field = e.target.getAttribute('data-field');
+  if (idx !== null && field) {
+    lastResult.clips[idx].metadata[field] = e.target.value;
+  }
+});
+
+function downloadAll() {
+  if (!lastResult) return;
+  lastResult.clips.forEach(c => {
+    const a = document.createElement('a');
+    a.href = c.video_url;
+    a.download = '';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  });
+}
+
+function copyAllMetadata() {
+  if (!lastResult) return;
+  const text = lastResult.clips.map((c, i) =>
+    `Clip ${i + 1}\nTitle: ${c.metadata.title}\nDescription: ${c.metadata.description}\nTags: ${(c.metadata.tags || []).join(', ')}`
+  ).join('\n\n');
+  navigator.clipboard.writeText(text);
+}
+
+async function postAll() {
+  if (!currentJobId) return;
+  const res = await fetch('/post/' + currentJobId, { method: 'POST' });
+  const json = await res.json();
+  if (!json.success) { alert(json.error); return; }
+  lastResult = json.data;
+  renderResults();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shinobi. — Repurpose your video, instantly</title>
+<style>
+@font-face {
+  font-family: 'Molgan';
+  src: url('/static/fonts/Molgan-Regular.otf') format('opentype'),
+       url('/static/fonts/Molgan-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+  :root {
+    --bg: #1c1b1f;
+    --bg-soft: #232227;
+    --panel: #28272c;
+    --panel-2: #2e2d33;
+    --border: #3a393f;
+    --purple: #8b5cf6;
+    --purple-2: #6d28d9;
+    --red: #ff4d5e;
+    --red-soft: #ff6b6b;
+    --charcoal: #35343a;
+    --green: #34d399;
+    --text: #f3f1f7;
+    --muted: #9b96a8;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Molgan', Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== Grain overlay ===== */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ===== Nav ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 62px;
+    padding: 0 24px;
+    background: var(--bg-soft);
+    border-bottom: none;
+  }
+  .logo {
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-mark {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: inline-flex;
+    overflow: hidden;
+  }
+  .logo-mark img { width: 100%; height: 100%; object-fit: cover; }
+  .nav-links { display: flex; gap: 20px; align-items: center; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    background: var(--panel-2);
+    border: 1px solid #ffffff;
+    color: var(--text);
+    border-radius: 6px;
+    padding: 5px 14px; font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: background 0.2s, border-color 0.2s;
+    text-decoration: none; display: inline-block;
+  }
+  .nav-cta:hover { background: var(--charcoal); border-color: var(--purple); }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 72px 24px 56px;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .hero .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    border: 1px solid #ffffff;
+    border-radius: 6px;
+    padding: 4px 12px;
+    margin-bottom: 20px;
+    background: var(--bg-soft);
+  }
+  .hero .eyebrow .pulse {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 0 rgba(52,211,153, 0.7);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(52,211,153, 0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(52,211,153, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(52,211,153, 0); }
+  }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 56px);
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+  }
+  .hero h1 .accent {
+    position: relative;
+    display: inline-block;
+  }
+  .hero h1 .accent::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 6px;
+    height: 6px;
+    background: var(--red);
+    z-index: -1;
+  }
+  .hero p.sub {
+    font-size: clamp(16px, 2.2vw, 20px);
+    color: var(--muted);
+    max-width: 620px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+  }
+  .hero-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--purple);
+    color: white; border: 1px solid var(--purple);
+    border-radius: 6px;
+    padding: 8px 18px; font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: background 0.15s, border-color 0.15s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--purple-2); }
+  .btn-ghost {
+    background: var(--panel);
+    border: 1px solid #ffffff;
+    color: var(--text);
+    border-radius: 6px;
+    padding: 8px 18px; font-size: 14px; font-weight: 500;
+    cursor: pointer; font-family: inherit;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .btn-ghost:hover { background: var(--panel-2); border-color: var(--purple); }
+
+  /* ===== Feature strip ===== */
+  .features {
+    position: relative; z-index: 1;
+    max-width: 1100px; margin: 32px auto 64px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px; padding: 0 24px;
+  }
+  .feature-card {
+    background: var(--panel);
+    border: 1px solid #ffffff;
+    border-radius: 6px;
+    padding: 18px;
+  }
+  .feature-card .icon {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--red);
+    margin-bottom: 14px;
+  }
+  .feature-card h3 { font-size: 15px; margin: 0 0 6px; font-weight: 600; }
+  .feature-card p { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.5; }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid #ffffff;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .panel h3 {
+    margin: -16px -20px 16px;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.5);
+    background: var(--bg-soft);
+    border-radius: 6px 6px 0 0;
+  }
+
+  .platforms { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+  .platform { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); transition: background 0.3s, box-shadow 0.3s; }
+  .dot.connected { background: var(--green); box-shadow: 0 0 12px rgba(52,211,153,0.6); }
+
+  button { font-family: inherit; }
+  button.secondary, .toggle button, .btn-small {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid #ffffff;
+    color: var(--text);
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  button.secondary:hover, .toggle button:hover, .btn-small:hover { background: rgba(255,255,255,0.07); border-color: #3a3548; }
+  .panel button:not(.secondary):not(.toggle button) {
+    background: var(--purple);
+    color: white; border: none; border-radius: 6px;
+    padding: 10px 18px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 8px 24px -10px rgba(139,92,246,0.6);
+  }
+  .panel button:not(.secondary):not(.toggle button):hover { transform: translateY(-1px); }
+
+  .toggle { display: flex; gap: 8px; margin-bottom: 18px; }
+  .toggle button.active {
+    background: var(--purple);
+    border-color: transparent; color: white;
+  }
+
+  .dropzone {
+    border: 1.5px dashed #ffffff;
+    border-radius: 6px;
+    padding: 48px 24px;
+    text-align: center;
+    cursor: pointer;
+    color: var(--muted);
+    transition: border-color 0.2s, background 0.2s;
+    background: rgba(255,255,255,0.015);
+  }
+  .dropzone:hover { border-color: var(--purple); }
+  .dropzone.drag { border-color: var(--red); color: var(--text); background: rgba(139,92,246,0.06); }
+
+  input[type=text], input[type=url], textarea, select {
+    width: 100%;
+    background: #0e0c14;
+    border: 1px solid #ffffff;
+    color: var(--text);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type=text]:focus, input[type=url]:focus, textarea:focus, select:focus { border-color: var(--purple); }
+
+  .row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+  .field { flex: 1; min-width: 160px; }
+  label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; letter-spacing: 0.01em; }
+  details summary { cursor: pointer; color: var(--muted); margin-bottom: 12px; font-size: 14px; user-select: none; }
+  details summary:hover { color: var(--text); }
+
+  .steps { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .step { display: flex; align-items: center; gap: 12px; font-size: 14px; padding: 4px 0; }
+  .step .icon {
+    width: 24px; height: 24px; border-radius: 50%; text-align: center;
+    display: flex; align-items: center; justify-content: center; font-size: 12px;
+    border: 1px solid #ffffff; flex-shrink: 0;
+  }
+  .step.pending { color: var(--muted); }
+  .step.active { color: var(--text); }
+  .step.active .icon { border-color: var(--purple); animation: spin 1s linear infinite; }
+  .step.done { color: var(--text); }
+  .step.done .icon { background: var(--purple); border-color: transparent; color: white; }
+  .step.error { color: var(--red); }
+  .step.error .icon { background: var(--red); border-color: transparent; color: white; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  progress {
+    width: 100%; height: 8px; border-radius: 5px; overflow: hidden;
+    appearance: none; border: none;
+  }
+  progress::-webkit-progress-bar { background: var(--bg-soft); border-radius: 5px; }
+  progress::-webkit-progress-value { background: var(--purple); border-radius: 5px; }
+
+  .clips { display: flex; gap: 18px; flex-wrap: wrap; }
+  .clip-card {
+    background: var(--panel-2);
+    border: 1px solid #ffffff;
+    border-radius: 6px;
+    padding: 14px;
+    width: 280px;
+  }
+  .clip-card video { width: 100%; border-radius: 6px; background: black; aspect-ratio: 9/16; object-fit: cover; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .tag { background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); border-radius: 6px; padding: 3px 12px; font-size: 12px; color: #d4c8ff; }
+  .post-status { font-size: 12px; margin-top: 10px; display: flex; flex-direction: column; gap: 4px; color: var(--muted); }
+  .post-status a { color: var(--purple); }
+  .hidden { display: none; }
+  .debug { font-size: 12px; color: var(--muted); white-space: pre-wrap; max-height: 200px; overflow-y: auto; font-family: monospace; }
+
+  footer {
+    text-align: center; color: var(--muted); font-size: 13px;
+    padding: 40px 24px 60px; position: relative; z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo"><span class="logo-mark"><img src="/logo-final.png" alt="Shinobi"></span> Shinobi.</div>
+    <div class="nav-links">
+      <a href="#how-it-works">How it works</a>
+      <a href="/readme.html">Read Me</a>
+      <a href="/app.html">Create</a>
+      <a class="nav-cta" href="/app.html">Get started</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="eyebrow"><span class="pulse"></span> AI-powered clipping, live now</div>
+    <h1>One long video.<br><span class="accent">Three viral clips.</span></h1>
+    <p class="sub">Shinobi. finds your best moments, cuts the dead air, reformats for vertical, burns in subtitles, and posts everywhere — automatically.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="/app.html">Start repurposing</a>
+      <button class="btn-ghost" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})">See how it works</button>
+    </div>
+  </section>
+
+  <div id="how-it-works" class="features">
+    <div class="feature-card">
+      <div class="icon">01</div>
+      <h3>Finds the moments</h3>
+      <p>Claude scans your transcript for the strongest hooks and most quotable beats.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">02</div>
+      <h3>Cuts the silence</h3>
+      <p>Dead air and awkward pauses are detected and removed automatically.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">03</div>
+      <h3>Goes vertical</h3>
+      <p>Smart cropping with face detection reframes for 9:16 — no stretching.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">04</div>
+      <h3>Burns in captions</h3>
+      <p>Word-by-word animated subtitles, styled and ready for Shorts and Reels.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">05</div>
+      <h3>Writes the copy</h3>
+      <p>Titles, descriptions, tags, and Reddit framing — generated per clip.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">06</div>
+      <h3>Posts everywhere</h3>
+      <p>One click to publish to YouTube Shorts, X, and Reddit simultaneously.</p>
+    </div>
+  </div>
+
+  <footer>Shinobi. — repurpose your video, instantly.</footer>
+
+</html>
