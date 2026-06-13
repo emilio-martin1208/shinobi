@@ -18,3 +18,4 @@ static/avatars/*
 # OS
 .DS_Store
 users.db
+CMO_README.md
