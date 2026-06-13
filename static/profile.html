@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shinobi. — Profile</title>
+<style>
+@font-face {
+  font-family: 'Molgan';
+  src: url('/static/fonts/Molgan-Regular.otf') format('opentype'),
+       url('/static/fonts/Molgan-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+:root {
+  --bg: #0d0d14;
+  --bg-soft: #14141f;
+  --panel: #14141f;
+  --panel-2: #1a1a26;
+  --purple: #8b5cf6;
+  --red: #ff4d5e;
+  --green: #34d399;
+  --text: #f3f1f7;
+  --muted: #9b96a8;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Molgan', Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 999; pointer-events: none;
+  opacity: 0.05; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 62px; padding: 0 24px; background: var(--bg-soft);
+}
+.logo {
+  font-weight: 700; font-size: 16px; letter-spacing: 0.02em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text);
+}
+.logo-mark { width: 28px; height: 28px; border-radius: 0px; display: inline-flex; overflow: hidden; }
+.logo-mark img { width: 100%; height: 100%; object-fit: cover; }
+.nav-links { display: flex; gap: 20px; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+
+.wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 100px; position: relative; z-index: 1; }
+h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 4px; }
+.sub { color: var(--muted); margin: 0 0 32px; font-size: 14px; }
+h2 {
+  font-size: 20px; font-weight: 700; margin: 40px 0 12px;
+  padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+.panel {
+  background: var(--panel); border: 1px solid #ffffff; border-radius: 0px;
+  padding: 16px 20px; margin: 16px 0;
+}
+
+/* Bio */
+textarea#bio {
+  width: 100%; min-height: 100px; resize: vertical;
+  background: #0e0c14; border: 1px solid #ffffff; color: var(--text);
+  border-radius: 0px; padding: 10px 12px; font-family: inherit; font-size: 14px; outline: none;
+  transition: border-color 0.2s;
+}
+textarea#bio:focus { border-color: var(--purple); }
+.save-row { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+button {
+  font-family: inherit; cursor: pointer; border-radius: 0px;
+  font-size: 14px; padding: 9px 18px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #8b5cf6, #ff4d5e);
+  color: white; border: 1px solid transparent; font-weight: 600;
+}
+#saveStatus { font-size: 12.5px; color: var(--green); opacity: 0; transition: opacity 0.3s; }
+#saveStatus.show { opacity: 1; }
+
+/* Platforms */
+.platforms { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+.platform { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.platform-logo { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; }
+.platform-logo svg { width: 100%; height: 100%; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); transition: background 0.3s, box-shadow 0.3s; }
+.dot.connected { background: var(--green); animation: dot-pulse 1.6s ease-in-out infinite; }
+@keyframes dot-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0.6); }
+  50% { box-shadow: 0 0 0 6px rgba(52,211,153,0); }
+}
+button.secondary {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid #ffffff;
+  color: var(--text);
+  transition: background 0.2s, border-color 0.2s;
+}
+button.secondary:hover { background: rgba(255,255,255,0.07); border-color: #3a3548; }
+
+/* Projects */
+.projects-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+.project-card {
+  background: var(--panel); border: 1px solid #ffffff; border-radius: 0px;
+  padding: 12px;
+}
+.project-card video {
+  width: 100%; aspect-ratio: 9/16; object-fit: cover; background: #000;
+  border-radius: 0px; margin-bottom: 8px;
+}
+.project-card .project-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.project-card .project-meta { font-size: 11.5px; color: var(--muted); }
+.empty-state { color: var(--muted); font-size: 14px; }
+
+/* Logged-out state */
+#loggedOut { text-align: center; padding: 80px 24px; }
+#loggedOut p { color: var(--muted); }
+
+footer { text-align: center; color: var(--muted); font-size: 13px; padding: 40px 24px 60px; position: relative; z-index: 1; }
+</style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="logo"><span class="logo-mark"><img src="/logo-final.png" alt="Shinobi"></span> Shinobi.</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/readme.html">Read Me</a>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div id="loggedOut" style="display:none;">
+      <h1>You're not logged in</h1>
+      <p>Log in or sign up from the top right to view your profile.</p>
+    </div>
+
+    <div id="profileContent" style="display:none;">
+      <h1 id="profileEmail">Profile</h1>
+      <p class="sub">Manage your bio, connected accounts, and past projects.</p>
+      <a class="btn-primary use-shinobi-btn" href="/app.html" style="display:inline-block; text-decoration:none; margin-bottom: 16px;">Use Shinobi</a>
+
+      <h2>Avatar & username</h2>
+      <div class="panel" style="display:flex; align-items:center; gap:20px;">
+        <img id="avatarPreview" src="/logo-final.png" alt="" style="width:72px; height:72px; object-fit:cover; border:1px solid #ffffff;">
+        <div style="flex:1;">
+          <input type="file" id="avatarInput" accept="image/*" style="display:none;" onchange="uploadAvatar()">
+          <button class="secondary" onclick="document.getElementById('avatarInput').click()">Change photo</button>
+          <div style="margin-top:12px;">
+            <input type="text" id="username" placeholder="Choose a username" style="background:#0e0c14; border:1px solid #ffffff; color:var(--text); border-radius:0px; padding:8px 10px; font-family:inherit; font-size:14px; outline:none; width:240px;">
+            <button class="btn-primary" onclick="saveUsername()" style="margin-left:8px;">Save</button>
+          </div>
+          <span id="usernameStatus" style="font-size:12.5px; color:var(--green); opacity:0; transition:opacity 0.3s; display:block; margin-top:6px;">Saved</span>
+        </div>
+      </div>
+
+      <h2>Bio</h2>
+      <div class="panel">
+        <textarea id="bio" placeholder="Tell people a little about yourself and your content..."></textarea>
+        <div class="save-row">
+          <button class="btn-primary" onclick="saveBio()">Save</button>
+          <span id="saveStatus">Saved</span>
+        </div>
+      </div>
+
+      <h2>Connected accounts</h2>
+      <div class="panel platforms" id="platformBar">
+        <div class="platform">
+          <span class="platform-logo" aria-hidden="true">
+            <svg viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg"><path d="M27.4 3.1c-.3-1.2-1.2-2.1-2.4-2.4C22.9 0 14 0 14 0S5.1 0 3 .7C1.8 1 .9 1.9.6 3.1 0 5.2 0 10 0 10s0 4.8.6 6.9c.3 1.2 1.2 2.1 2.4 2.4C5.1 20 14 20 14 20s8.9 0 11-.7c1.2-.3 2.1-1.2 2.4-2.4.6-2.1.6-6.9.6-6.9s0-4.8-.6-6.9zM11 14.3V5.7L18.5 10 11 14.3z" fill="#FF0000"/></svg>
+          </span>
+          <span class="dot" id="dot-youtube"></span> YouTube <button class="secondary" onclick="connect('youtube')">Connect</button>
+        </div>
+        <div class="platform">
+          <span class="platform-logo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="#fff"/></svg>
+          </span>
+          <span class="dot" id="dot-twitter"></span> Twitter/X <button class="secondary" onclick="connect('twitter')">Connect</button>
+        </div>
+        <div class="platform">
+          <span class="platform-logo" aria-hidden="true">
+            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="#FF4500"/><path d="M16.67 10a1.46 1.46 0 0 0-2.47-1.05 7.12 7.12 0 0 0-3.85-1.23l.65-3.07 2.13.45a1.04 1.04 0 1 0 .1-.51l-2.38-.5a.26.26 0 0 0-.3.2l-.72 3.42a7.12 7.12 0 0 0-3.92 1.23A1.46 1.46 0 1 0 4.4 11.4a2.83 2.83 0 0 0 0 .36c0 2.17 2.51 3.93 5.6 3.93s5.6-1.76 5.6-3.93a2.83 2.83 0 0 0 0-.36 1.45 1.45 0 0 0 1.07-1.4zM7.5 11.25a1 1 0 1 1 1 1 1 1 0 0 1-1-1zm5.45 2.6a3.5 3.5 0 0 1-2.95 1.07 3.5 3.5 0 0 1-2.95-1.07.27.27 0 0 1 .38-.38 2.9 2.9 0 0 0 2.57.9 2.9 2.9 0 0 0 2.57-.9.27.27 0 1 1 .38.38zm-.2-1.6a1 1 0 1 1 1-1 1 1 0 0 1-1 1z" fill="#fff"/></svg>
+          </span>
+          <span class="dot" id="dot-reddit"></span> Reddit <button class="secondary" onclick="connect('reddit')">Connect</button>
+        </div>
+      </div>
+
+      <h2>Past projects</h2>
+      <div class="projects-grid" id="projectsGrid">
+        <div class="empty-state">No projects yet — repurpose a video to see it here.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Shinobi. — repurpose your video, instantly.</footer>
+
+<script>
+async function loadProfile() {
+  try {
+    const res = await fetch('/api/profile');
+    const json = await res.json();
+    if (!json.success) {
+      document.getElementById('loggedOut').style.display = '';
+      document.getElementById('profileContent').style.display = 'none';
+      return;
+    }
+    document.getElementById('loggedOut').style.display = 'none';
+    document.getElementById('profileContent').style.display = '';
+    document.getElementById('profileEmail').textContent = json.data.username || json.data.email;
+    document.getElementById('bio').value = json.data.bio || '';
+    document.getElementById('username').value = json.data.username || '';
+    if (json.data.avatar_url) document.getElementById('avatarPreview').src = json.data.avatar_url;
+
+    const grid = document.getElementById('projectsGrid');
+    const projects = json.data.projects || [];
+    if (projects.length === 0) {
+      grid.innerHTML = '<div class="empty-state">No projects yet — repurpose a video to see it here.</div>';
+    } else {
+      grid.innerHTML = projects.map(p => `
+        <div class="project-card">
+          <video src="${p.thumbnail_url}" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>
+          <div class="project-title">${escapeHtml(p.title || 'Untitled project')}</div>
+          <div class="project-meta">${p.clip_count} clip${p.clip_count === 1 ? '' : 's'} &middot; ${new Date(p.created_at * 1000).toLocaleDateString()}</div>
+        </div>
+      `).join('');
+    }
+  } catch (e) { /* ignore */ }
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+async function saveBio() {
+  const bio = document.getElementById('bio').value;
+  const res = await fetch('/api/profile', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ bio })
+  });
+  const json = await res.json();
+  if (json.success) {
+    const status = document.getElementById('saveStatus');
+    status.classList.add('show');
+    setTimeout(() => status.classList.remove('show'), 1500);
+  }
+}
+
+async function saveUsername() {
+  const username = document.getElementById('username').value;
+  const res = await fetch('/api/profile', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username })
+  });
+  const json = await res.json();
+  const status = document.getElementById('usernameStatus');
+  if (json.success) {
+    status.textContent = 'Saved';
+    status.style.color = 'var(--green)';
+    document.getElementById('profileEmail').textContent = json.data.username || '';
+    if (window.shinobiRefreshAuthUI) window.shinobiRefreshAuthUI();
+  } else {
+    status.textContent = json.error || 'Error';
+    status.style.color = 'var(--red)';
+  }
+  status.style.opacity = 1;
+  setTimeout(() => status.style.opacity = 0, 1800);
+}
+
+async function uploadAvatar() {
+  const input = document.getElementById('avatarInput');
+  if (!input.files || !input.files[0]) return;
+  const fd = new FormData();
+  fd.append('file', input.files[0]);
+  const res = await fetch('/api/profile/avatar', { method: 'POST', body: fd });
+  const json = await res.json();
+  if (json.success) {
+    document.getElementById('avatarPreview').src = json.data.avatar_url + '?t=' + Date.now();
+    if (window.shinobiRefreshAuthUI) window.shinobiRefreshAuthUI();
+  }
+}
+
+async function refreshAuthStatus() {
+  try {
+    const res = await fetch('/auth/status');
+    const json = await res.json();
+    if (json.success) {
+      for (const platform of ['youtube', 'twitter', 'reddit']) {
+        document.getElementById('dot-' + platform).classList.toggle('connected', !!json.data[platform]);
+      }
+    }
+  } catch (e) { /* ignore */ }
+}
+
+function connect(platform) {
+  const popup = window.open('/auth/' + platform, 'oauth_' + platform, 'width=500,height=700');
+  window.addEventListener('message', function handler(e) {
+    if (e.data && e.data.type === 'oauth_complete') {
+      window.removeEventListener('message', handler);
+      refreshAuthStatus();
+    }
+  });
+}
+
+loadProfile();
+refreshAuthStatus();
+</script>
+<script src="/auth.js"></script>
+</body>
+</html>

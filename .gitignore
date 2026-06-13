@@ -12,6 +12,9 @@ venv/
 uploads/
 output/
 server.log
+static/avatars/*
+!static/avatars/.gitkeep
 
 # OS
 .DS_Store
+users.db

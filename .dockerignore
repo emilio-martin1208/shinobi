@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+uploads/
+output/
+server.log
+.git/
+.env
+users.db
+tokens.db

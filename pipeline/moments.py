@@ -5,6 +5,18 @@ from anthropic import AsyncAnthropic
 
 MODEL = "claude-sonnet-4-5-20250929"
 
+# Map Shinobi's branded model picker names to real Claude models.
+MODEL_MAP = {
+    "katana-5.5": "claude-sonnet-4-5-20250929",
+    "wakizashi-4.5": "claude-sonnet-4-5-20250929",
+    "kunai-4.5": "claude-3-5-haiku-20241022",
+    "shuriken-3.5": "claude-3-5-haiku-20241022",
+}
+
+
+def _resolve_model(options):
+    return MODEL_MAP.get((options or {}).get("model"), MODEL)
+
 _client = None
 
 
@@ -40,8 +52,18 @@ async def find_moments(words, options=None):
     """
     options = options or {}
     num_clips = options.get("num_clips", 3)
+    instructions = (options.get("instructions") or "").strip()
     transcript_with_ts = _build_transcript_with_timestamps(words)
     total_duration = words[-1]["end"] if words else 0
+
+    instructions_block = ""
+    if instructions:
+        instructions_block = f"""
+The user has given you these specific instructions for selecting clips. Follow them closely,
+even if it means overriding the default scoring criteria below (e.g. if they ask you to make
+sure a specific moment, topic, or line is included, prioritize that):
+\"\"\"{instructions}\"\"\"
+"""
 
     prompt = f"""You are given a timestamped transcript of a video (total duration ~{total_duration:.1f}s).
 
@@ -49,7 +71,7 @@ Transcript (format: [start-end] text):
 {transcript_with_ts}
 
 Identify the {num_clips} best standalone segments that would work as short-form clips (e.g. for YouTube Shorts / TikTok / Reels).
-
+{instructions_block}
 Scoring criteria:
 - Strong hook in the first 5 seconds
 - High information density
@@ -64,7 +86,7 @@ Respond with ONLY a JSON array (no markdown, no commentary), with exactly {num_c
 
     client = _get_client()
     response = await client.messages.create(
-        model=MODEL,
+        model=_resolve_model(options),
         max_tokens=2000,
         messages=[{"role": "user", "content": prompt}],
     )

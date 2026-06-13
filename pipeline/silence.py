@@ -82,14 +82,14 @@ async def _run_ffmpeg(args, log_path):
         raise RuntimeError(f"ffmpeg failed (code {proc.returncode}), see {log_path}")
 
 
-async def remove_silence(input_path, output_path, log_path):
+async def remove_silence(input_path, output_path, log_path, noise_db=-35, min_duration=0.6):
     """Detect silence gaps and concat the non-silent segments together.
 
     Returns (output_path, keep_intervals) where keep_intervals are the
     (start, end) ranges (in original-clip time) that were kept, in order.
     """
     duration = await _ffprobe_duration(input_path)
-    silences = await _detect_silence(input_path, log_path)
+    silences = await _detect_silence(input_path, log_path, noise_db=noise_db, min_duration=min_duration)
     keep = _build_keep_intervals(duration, silences)
 
     if len(keep) <= 1:

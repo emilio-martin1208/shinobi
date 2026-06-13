@@ -13,16 +13,16 @@
   font-style: normal;
 }
   :root {
-    --bg: #1c1b1f;
-    --bg-soft: #232227;
-    --panel: #28272c;
-    --panel-2: #2e2d33;
+    --bg: #0d0d14;
+    --bg-soft: #14141f;
+    --panel: #14141f;
+    --panel-2: #1a1a26;
     --border: #3a393f;
     --purple: #8b5cf6;
     --purple-2: #6d28d9;
     --red: #ff4d5e;
     --red-soft: #ff6b6b;
-    --charcoal: #35343a;
+    --charcoal: #20202e;
     --green: #34d399;
     --text: #f3f1f7;
     --muted: #9b96a8;
@@ -75,7 +75,7 @@
   }
   .logo-mark {
     width: 28px; height: 28px;
-    border-radius: 6px;
+    border-radius: 0px;
     display: inline-flex;
     overflow: hidden;
   }
@@ -84,10 +84,10 @@
   .nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color 0.2s; }
   .nav-links a:hover { color: var(--text); }
   .nav-cta {
-    background: var(--panel-2);
+    background: linear-gradient(135deg, rgba(139,92,246,0.25), rgba(255,77,94,0.15));
     border: 1px solid #ffffff;
     color: var(--text);
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 5px 14px; font-size: 13px; font-weight: 600;
     cursor: pointer; font-family: inherit;
     transition: background 0.2s, border-color 0.2s;
@@ -104,14 +104,14 @@
   }
   .app-section .section-head { text-align: center; margin-bottom: 32px; }
   .app-section .section-head h2 {
-    font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 10px;
+    font-size: clamp(22.4px, 3.2vw, 32px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 10px;
   }
   .app-section .section-head p { color: var(--muted); margin: 0; }
 
   .panel {
     background: var(--panel);
     border: 1px solid #ffffff;
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 16px 20px;
     margin-bottom: 16px;
   }
@@ -122,20 +122,26 @@
     font-size: 14px;
     border-bottom: 1px solid rgba(255,255,255,0.5);
     background: var(--bg-soft);
-    border-radius: 6px 6px 0 0;
+    border-radius: 0px 6px 0 0;
   }
 
   .platforms { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
   .platform { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+  .platform-logo { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; }
+  .platform-logo svg { width: 100%; height: 100%; }
   .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); transition: background 0.3s, box-shadow 0.3s; }
-  .dot.connected { background: var(--green); box-shadow: 0 0 12px rgba(52,211,153,0.6); }
+  .dot.connected { background: var(--green); animation: dot-pulse 1.6s ease-in-out infinite; }
+  @keyframes dot-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0.6); }
+    50% { box-shadow: 0 0 0 6px rgba(52,211,153,0); }
+  }
 
   button { font-family: inherit; }
   button.secondary, .toggle button, .btn-small {
     background: rgba(255,255,255,0.03);
     border: 1px solid #ffffff;
     color: var(--text);
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 8px 16px;
     cursor: pointer;
     font-size: 13px;
@@ -143,8 +149,8 @@
   }
   button.secondary:hover, .toggle button:hover, .btn-small:hover { background: rgba(255,255,255,0.07); border-color: #3a3548; }
   .panel button:not(.secondary):not(.toggle button) {
-    background: var(--purple);
-    color: white; border: none; border-radius: 6px;
+    background: linear-gradient(135deg, #8b5cf6, #ff4d5e);
+    color: white; border: none; border-radius: 0px;
     padding: 10px 18px; font-size: 14px; font-weight: 600;
     cursor: pointer; transition: transform 0.15s, box-shadow 0.2s;
     box-shadow: 0 8px 24px -10px rgba(139,92,246,0.6);
@@ -153,13 +159,13 @@
 
   .toggle { display: flex; gap: 8px; margin-bottom: 18px; }
   .toggle button.active {
-    background: var(--purple);
+    background: linear-gradient(135deg, #8b5cf6, #ff4d5e);
     border-color: transparent; color: white;
   }
 
   .dropzone {
     border: 1.5px dashed #ffffff;
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 48px 24px;
     text-align: center;
     cursor: pointer;
@@ -175,7 +181,7 @@
     background: #0e0c14;
     border: 1px solid #ffffff;
     color: var(--text);
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 10px 12px;
     font-family: inherit;
     font-size: 14px;
@@ -206,24 +212,33 @@
   .step.error .icon { background: var(--red); border-color: transparent; color: white; }
   @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-  progress {
+  .progress-track {
     width: 100%; height: 8px; border-radius: 5px; overflow: hidden;
-    appearance: none; border: none;
+    background: var(--bg-soft);
   }
-  progress::-webkit-progress-bar { background: var(--bg-soft); border-radius: 5px; }
-  progress::-webkit-progress-value { background: var(--purple); border-radius: 5px; }
+  .progress-fill {
+    height: 100%; width: 0%; border-radius: 5px;
+    background: linear-gradient(120deg, var(--purple), var(--red), var(--purple));
+    background-size: 200% 100%;
+    animation: progress-flow 2s linear infinite;
+    transition: width 0.4s ease-out;
+  }
+  @keyframes progress-flow {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+  }
 
   .clips { display: flex; gap: 18px; flex-wrap: wrap; }
   .clip-card {
     background: var(--panel-2);
     border: 1px solid #ffffff;
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 14px;
     width: 280px;
   }
-  .clip-card video { width: 100%; border-radius: 6px; background: black; aspect-ratio: 9/16; object-fit: cover; }
+  .clip-card video { width: 100%; border-radius: 0px; background: black; aspect-ratio: 9/16; object-fit: cover; }
   .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-  .tag { background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); border-radius: 6px; padding: 3px 12px; font-size: 12px; color: #d4c8ff; }
+  .tag { background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); border-radius: 0px; padding: 3px 12px; font-size: 12px; color: #d4c8ff; }
   .post-status { font-size: 12px; margin-top: 10px; display: flex; flex-direction: column; gap: 4px; color: var(--muted); }
   .post-status a { color: var(--purple); }
   .hidden { display: none; }
@@ -233,6 +248,12 @@
     text-align: center; color: var(--muted); font-size: 13px;
     padding: 40px 24px 60px; position: relative; z-index: 1;
   }
+  .typed-cursor {
+    display: inline-block;
+    margin-left: 2px;
+    animation: typed-blink 0.9s step-end infinite;
+  }
+  @keyframes typed-blink { 50% { opacity: 0; } }
 </style>
 </head>
 <body>
@@ -248,14 +269,8 @@
 
   <div class="app-section" id="app">
     <div class="section-head">
-      <h2>Repurpose a video</h2>
+      <h2 id="greetingHeading"><span id="greetingTypedText"></span><span class="typed-cursor">|</span></h2>
       <p>Upload a file or drop in a YouTube link to get started.</p>
-    </div>
-
-    <div class="panel platforms" id="platformBar">
-      <div class="platform"><span class="dot" id="dot-youtube"></span> YouTube <button class="secondary" onclick="connect('youtube')">Connect</button></div>
-      <div class="platform"><span class="dot" id="dot-twitter"></span> Twitter/X <button class="secondary" onclick="connect('twitter')">Connect</button></div>
-      <div class="platform"><span class="dot" id="dot-reddit"></span> Reddit <button class="secondary" onclick="connect('reddit')">Connect</button></div>
     </div>
 
     <div class="panel" id="inputPanel">
@@ -317,7 +332,7 @@
 
     <div class="panel hidden" id="progressPanel">
       <h3>Processing...</h3>
-      <progress id="progressBar" value="0" max="100"></progress>
+      <div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
       <div class="steps" id="stepsList"></div>
       <details style="margin-top:16px;">
         <summary>Debug logs</summary>
@@ -356,34 +371,12 @@ let currentJobId = null;
 let pollInterval = null;
 let lastResult = null;
 
+
 function setMode(mode) {
   document.getElementById('tabFile').classList.toggle('active', mode === 'file');
   document.getElementById('tabUrl').classList.toggle('active', mode === 'url');
   document.getElementById('fileInput').classList.toggle('hidden', mode !== 'file');
   document.getElementById('urlInput').classList.toggle('hidden', mode !== 'url');
-}
-
-async function refreshAuthStatus() {
-  try {
-    const res = await fetch('/auth/status');
-    const json = await res.json();
-    if (json.success) {
-      for (const platform of ['youtube', 'twitter', 'reddit']) {
-        document.getElementById('dot-' + platform).classList.toggle('connected', !!json.data[platform]);
-      }
-    }
-  } catch (e) { /* ignore */ }
-}
-refreshAuthStatus();
-
-function connect(platform) {
-  const popup = window.open('/auth/' + platform, 'oauth_' + platform, 'width=500,height=700');
-  window.addEventListener('message', function handler(e) {
-    if (e.data && e.data.type === 'oauth_complete') {
-      window.removeEventListener('message', handler);
-      refreshAuthStatus();
-    }
-  });
 }
 
 function getOptions() {
@@ -392,6 +385,11 @@ function getOptions() {
     audience: document.getElementById('audience').value,
     niche: document.getElementById('niche').value,
     cta: document.getElementById('cta').value,
+    instructions: (function() {
+      try { return JSON.parse(localStorage.getItem('shinobi_instructions') || '[]').join('\n'); }
+      catch (e) { return ''; }
+    })(),
+    model: localStorage.getItem('shinobi_model') || 'katana-5.5',
     num_clips: parseInt(document.getElementById('numClips').value, 10),
     platforms: [
       ...(document.getElementById('platYoutube').checked ? ['youtube'] : []),
@@ -478,7 +476,7 @@ function pollStatus() {
       const json = await res.json();
       if (!json.success) return;
       const data = json.data;
-      document.getElementById('progressBar').value = data.progress;
+      document.getElementById('progressBar').style.width = data.progress + '%';
       renderSteps(data.steps);
       document.getElementById('debugLogs').textContent = data.logs.join('\n');
       if (data.status === 'error') {
@@ -570,5 +568,44 @@ async function postAll() {
   renderResults();
 }
 </script>
+<script>
+  (function () {
+    var greetings = [
+      'ready to edit, clip, and go viral?',
+      'let\'s turn that video into something great.',
+      'ready to clip your next hit?',
+      'time to repurpose something amazing.',
+      'let\'s find the best moments in your video.',
+      'ready when you are.',
+      'let\'s make some content magic.',
+      'your next viral clip starts here.'
+    ];
+
+    function startGreetingTypewriter(name) {
+      var el = document.getElementById('greetingTypedText');
+      if (!el) return;
+      var greeting = greetings[Math.floor(Math.random() * greetings.length)];
+      var text = 'Hello ' + name + ', ' + greeting;
+      var i = 0;
+      (function type() {
+        if (i <= text.length) {
+          el.textContent = text.slice(0, i);
+          i++;
+          setTimeout(type, 45);
+        }
+      })();
+    }
+
+    fetch('/api/me').then(function (res) { return res.json(); }).then(function (json) {
+      var name = 'there';
+      if (json.success && json.data && json.data.logged_in) {
+        name = json.data.username || json.data.email;
+      }
+      startGreetingTypewriter(name);
+    }).catch(function () { startGreetingTypewriter('there'); });
+  })();
+</script>
+<script src="/auth.js"></script>
+<script src="/copilot.js"></script>
 </body>
 </html>

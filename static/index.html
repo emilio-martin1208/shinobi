@@ -13,16 +13,16 @@
   font-style: normal;
 }
   :root {
-    --bg: #1c1b1f;
-    --bg-soft: #232227;
-    --panel: #28272c;
-    --panel-2: #2e2d33;
+    --bg: #0d0d14;
+    --bg-soft: #14141f;
+    --panel: #14141f;
+    --panel-2: #1a1a26;
     --border: #3a393f;
     --purple: #8b5cf6;
     --purple-2: #6d28d9;
     --red: #ff4d5e;
     --red-soft: #ff6b6b;
-    --charcoal: #35343a;
+    --charcoal: #20202e;
     --green: #34d399;
     --text: #f3f1f7;
     --muted: #9b96a8;
@@ -73,7 +73,7 @@
   }
   .logo-mark {
     width: 28px; height: 28px;
-    border-radius: 6px;
+    border-radius: 0px;
     display: inline-flex;
     overflow: hidden;
   }
@@ -82,10 +82,10 @@
   .nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color 0.2s; }
   .nav-links a:hover { color: var(--text); }
   .nav-cta {
-    background: var(--panel-2);
+    background: linear-gradient(135deg, rgba(139,92,246,0.25), rgba(255,77,94,0.15));
     border: 1px solid #ffffff;
     color: var(--text);
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 5px 14px; font-size: 13px; font-weight: 600;
     cursor: pointer; font-family: inherit;
     transition: background 0.2s, border-color 0.2s;
@@ -109,7 +109,7 @@
     font-size: 12px;
     color: var(--muted);
     border: 1px solid #ffffff;
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 4px 12px;
     margin-bottom: 20px;
     background: var(--bg-soft);
@@ -154,9 +154,9 @@
   }
   .hero-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
   .btn-primary {
-    background: var(--purple);
-    color: white; border: 1px solid var(--purple);
-    border-radius: 6px;
+    background: linear-gradient(135deg, #8b5cf6, #ff4d5e);
+    color: white; border: 1px solid transparent;
+    border-radius: 0px;
     padding: 8px 18px; font-size: 14px; font-weight: 600;
     cursor: pointer; font-family: inherit;
     transition: background 0.15s, border-color 0.15s;
@@ -167,7 +167,7 @@
     background: var(--panel);
     border: 1px solid #ffffff;
     color: var(--text);
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 8px 18px; font-size: 14px; font-weight: 500;
     cursor: pointer; font-family: inherit;
     transition: background 0.15s, border-color 0.15s;
@@ -175,32 +175,97 @@
   .btn-ghost:hover { background: var(--panel-2); border-color: var(--purple); }
 
   /* ===== Feature strip ===== */
-  .features {
+  .copilot-intro {
     position: relative; z-index: 1;
-    max-width: 1100px; margin: 32px auto 64px;
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 12px; padding: 0 24px;
+    max-width: 1100px; margin: 32px auto 80px; padding: 0 24px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;
   }
-  .feature-card {
-    background: var(--panel);
+  .copilot-intro h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -0.02em; margin: 8px 0 12px; }
+  .copilot-intro.reveal {
+    opacity: 0;
+    transform: none;
+    transition: opacity 1.4s ease;
+  }
+  .copilot-intro.reveal.is-visible { opacity: 1; }
+  .typed-cursor {
+    display: inline-block;
+    margin-left: 2px;
+    animation: typed-blink 0.9s step-end infinite;
+  }
+  @keyframes typed-blink { 50% { opacity: 0; } }
+  .copilot-intro-video {
     border: 1px solid #ffffff;
-    border-radius: 6px;
-    padding: 18px;
+    background: var(--panel);
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
   }
-  .feature-card .icon {
+  .copilot-intro-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  @media (max-width: 760px) {
+    .copilot-intro { grid-template-columns: 1fr; }
+  }
+
+  /* ===== Scroll reveal ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+  /* ===== How it works (steps) ===== */
+  .steps {
+    position: relative; z-index: 1;
+    max-width: 720px; margin: 64px auto 96px; padding: 0 24px;
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .step {
+    display: flex; gap: 24px; align-items: flex-start;
+    padding: 32px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
     font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 13px; font-weight: 700;
+    font-size: 14px; font-weight: 700;
     letter-spacing: 0.1em;
     color: var(--red);
-    margin-bottom: 14px;
+    flex-shrink: 0; width: 36px;
+    padding-top: 4px;
   }
-  .feature-card h3 { font-size: 15px; margin: 0 0 6px; font-weight: 600; }
-  .feature-card p { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.5; }
+  .step-body h3 { font-size: 20px; margin: 0 0 8px; font-weight: 700; }
+  .step-body p { font-size: 14px; color: var(--muted); margin: 0; line-height: 1.7; max-width: 540px; }
+
+  /* ===== Models (pick your blade) ===== */
+  .models-section {
+    position: relative; z-index: 1;
+    max-width: 720px; margin: 32px auto 96px; padding: 0 24px;
+  }
+  .models-header { text-align: center; max-width: 620px; margin: 0 auto 16px; }
+  .models-header h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -0.02em; margin: 8px 0 12px; }
+  .models-list { display: flex; flex-direction: column; }
+  .model-row {
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .model-row:last-child { border-bottom: none; }
+  .model-row-name { display: flex; align-items: center; gap: 8px; }
+  .model-row-name h3 { font-size: 19px; margin: 0; font-weight: 700; }
+  .model-card-badge {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    color: var(--green); border: 1px solid var(--green);
+    border-radius: 0px; padding: 1px 6px;
+  }
+  .model-row-tier {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--red); font-weight: 700;
+    margin: 6px 0 8px;
+  }
+  .model-row-desc { font-size: 14px; color: var(--muted); margin: 0; line-height: 1.7; max-width: 540px; }
 
   .panel {
     background: var(--panel);
     border: 1px solid #ffffff;
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 16px 20px;
     margin-bottom: 16px;
   }
@@ -211,7 +276,7 @@
     font-size: 14px;
     border-bottom: 1px solid rgba(255,255,255,0.5);
     background: var(--bg-soft);
-    border-radius: 6px 6px 0 0;
+    border-radius: 0px 6px 0 0;
   }
 
   .platforms { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
@@ -224,7 +289,7 @@
     background: rgba(255,255,255,0.03);
     border: 1px solid #ffffff;
     color: var(--text);
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 8px 16px;
     cursor: pointer;
     font-size: 13px;
@@ -232,8 +297,8 @@
   }
   button.secondary:hover, .toggle button:hover, .btn-small:hover { background: rgba(255,255,255,0.07); border-color: #3a3548; }
   .panel button:not(.secondary):not(.toggle button) {
-    background: var(--purple);
-    color: white; border: none; border-radius: 6px;
+    background: linear-gradient(135deg, #8b5cf6, #ff4d5e);
+    color: white; border: none; border-radius: 0px;
     padding: 10px 18px; font-size: 14px; font-weight: 600;
     cursor: pointer; transition: transform 0.15s, box-shadow 0.2s;
     box-shadow: 0 8px 24px -10px rgba(139,92,246,0.6);
@@ -242,13 +307,13 @@
 
   .toggle { display: flex; gap: 8px; margin-bottom: 18px; }
   .toggle button.active {
-    background: var(--purple);
+    background: linear-gradient(135deg, #8b5cf6, #ff4d5e);
     border-color: transparent; color: white;
   }
 
   .dropzone {
     border: 1.5px dashed #ffffff;
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 48px 24px;
     text-align: center;
     cursor: pointer;
@@ -264,7 +329,7 @@
     background: #0e0c14;
     border: 1px solid #ffffff;
     color: var(--text);
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 10px 12px;
     font-family: inherit;
     font-size: 14px;
@@ -306,13 +371,13 @@
   .clip-card {
     background: var(--panel-2);
     border: 1px solid #ffffff;
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 14px;
     width: 280px;
   }
-  .clip-card video { width: 100%; border-radius: 6px; background: black; aspect-ratio: 9/16; object-fit: cover; }
+  .clip-card video { width: 100%; border-radius: 0px; background: black; aspect-ratio: 9/16; object-fit: cover; }
   .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-  .tag { background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); border-radius: 6px; padding: 3px 12px; font-size: 12px; color: #d4c8ff; }
+  .tag { background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); border-radius: 0px; padding: 3px 12px; font-size: 12px; color: #d4c8ff; }
   .post-status { font-size: 12px; margin-top: 10px; display: flex; flex-direction: column; gap: 4px; color: var(--muted); }
   .post-status a { color: var(--purple); }
   .hidden { display: none; }
@@ -331,8 +396,6 @@
     <div class="nav-links">
       <a href="#how-it-works">How it works</a>
       <a href="/readme.html">Read Me</a>
-      <a href="/app.html">Create</a>
-      <a class="nav-cta" href="/app.html">Get started</a>
     </div>
   </nav>
 
@@ -341,44 +404,146 @@
     <h1>One long video.<br><span class="accent">Three viral clips.</span></h1>
     <p class="sub">Shinobi. finds your best moments, cuts the dead air, reformats for vertical, burns in subtitles, and posts everywhere — automatically.</p>
     <div class="hero-actions">
-      <a class="btn-primary" href="/app.html">Start repurposing</a>
+      <a class="btn-primary use-shinobi-btn" href="/app.html">Use Shinobi</a>
       <button class="btn-ghost" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})">See how it works</button>
     </div>
   </section>
 
-  <div id="how-it-works" class="features">
-    <div class="feature-card">
-      <div class="icon">01</div>
-      <h3>Finds the moments</h3>
-      <p>Claude scans your transcript for the strongest hooks and most quotable beats.</p>
+  <div id="how-it-works" class="steps">
+    <div class="step reveal">
+      <div class="step-num">01</div>
+      <div class="step-body">
+        <h3>Finds the moments</h3>
+        <p>Claude reads your full transcript — not just keywords — and scores every segment for hook strength, emotional payoff, and how well it stands alone. It picks the moments that actually make people stop scrolling.</p>
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="icon">02</div>
-      <h3>Cuts the silence</h3>
-      <p>Dead air and awkward pauses are detected and removed automatically.</p>
+    <div class="step reveal">
+      <div class="step-num">02</div>
+      <div class="step-body">
+        <h3>Cuts the silence</h3>
+        <p>Dead air, "ums," and long pauses are detected automatically and trimmed out — frame-accurate — so every clip feels tight and high-energy without you touching a timeline.</p>
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="icon">03</div>
-      <h3>Goes vertical</h3>
-      <p>Smart cropping with face detection reframes for 9:16 — no stretching.</p>
+    <div class="step reveal">
+      <div class="step-num">03</div>
+      <div class="step-body">
+        <h3>Goes vertical</h3>
+        <p>Each clip is reframed to 9:16 with smart cropping that tracks faces and motion, so your subject stays centered — no black bars, no stretching.</p>
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="icon">04</div>
-      <h3>Burns in captions</h3>
-      <p>Word-by-word animated subtitles, styled and ready for Shorts and Reels.</p>
+    <div class="step reveal">
+      <div class="step-num">04</div>
+      <div class="step-body">
+        <h3>Burns in captions</h3>
+        <p>Animated, word-by-word subtitles are burned directly into the video — styled to match the energy of short-form platforms and ready to post.</p>
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="icon">05</div>
-      <h3>Writes the copy</h3>
-      <p>Titles, descriptions, tags, and Reddit framing — generated per clip.</p>
+    <div class="step reveal">
+      <div class="step-num">05</div>
+      <div class="step-body">
+        <h3>Writes the copy</h3>
+        <p>For every clip, Shinobi writes a title, description, tags, and a Reddit-ready framing — tuned to your tone, audience, and niche.</p>
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="icon">06</div>
-      <h3>Posts everywhere</h3>
-      <p>One click to publish to YouTube Shorts, X, and Reddit simultaneously.</p>
+    <div class="step reveal">
+      <div class="step-num">06</div>
+      <div class="step-body">
+        <h3>Posts everywhere</h3>
+        <p>Connect your accounts once, then publish to YouTube Shorts, X, and Reddit simultaneously with a single click.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="copilot-intro reveal">
+    <div class="copilot-intro-text">
+      <div class="eyebrow"><span class="pulse"></span> <span style="color: var(--green);">New</span></div>
+      <h2 id="copilotTypedHeading"><span id="copilotTypedText"></span><span class="typed-cursor">|</span></h2>
+      <p class="sub">Tell Shinobi exactly what you want — "make sure you include the part where I scream" — and it'll find it, cut it, and write the copy around it. Right from the floating assistant in the corner.</p>
+    </div>
+    <div class="copilot-intro-video">
+      <video autoplay loop muted playsinline>
+        <source src="/copilot-demo.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+
+  <div class="models-section">
+    <div class="models-header">
+      <div class="eyebrow"><span class="pulse"></span> Choose your edge</div>
+      <h2>Pick your blade</h2>
+      <p class="sub">Every job runs on a Shinobi model — pick the one that matches your speed and precision needs.</p>
+    </div>
+    <div class="models-list">
+      <div class="model-row reveal">
+        <div class="model-row-name">
+          <h3>Katana 5.5</h3>
+          <span class="model-card-badge">New</span>
+        </div>
+        <div class="model-row-tier">Most capable</div>
+        <p class="model-row-desc">Sharpest editing — best for nuanced, high-stakes clip selection. Catches subtle hooks and pays off the long setup.</p>
+      </div>
+      <div class="model-row reveal">
+        <div class="model-row-name">
+          <h3>Wakizashi 4.5</h3>
+        </div>
+        <div class="model-row-tier">Most capable</div>
+        <p class="model-row-desc">Balanced speed and quality for everyday repurposing. The default for most channels.</p>
+      </div>
+      <div class="model-row reveal">
+        <div class="model-row-name">
+          <h3>Kunai 4.5</h3>
+        </div>
+        <div class="model-row-tier">Fast</div>
+        <p class="model-row-desc">Quick turnaround for simple, low-stakes clips. Great for high-volume batches.</p>
+      </div>
+      <div class="model-row reveal">
+        <div class="model-row-name">
+          <h3>Shuriken 3.5</h3>
+        </div>
+        <div class="model-row-tier">Fast</div>
+        <p class="model-row-desc">Lightweight and fast, for quick drafts and previews before a final pass.</p>
+      </div>
     </div>
   </div>
 
   <footer>Shinobi. — repurpose your video, instantly.</footer>
 
+  <script>
+    (function () {
+      var items = document.querySelectorAll('.reveal');
+      var groups = {};
+      items.forEach(function (el) {
+        var parent = el.parentElement;
+        if (!groups[parent.className]) groups[parent.className] = [];
+        var arr = groups[parent.className];
+        var idx = Array.prototype.indexOf.call(parent.querySelectorAll('.reveal'), el);
+        el.style.transitionDelay = (idx * 0.12) + 's';
+      });
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+            if (entry.target.classList.contains('copilot-intro')) startTypewriter();
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+      items.forEach(function (el) { observer.observe(el); });
+
+      function startTypewriter() {
+        var el = document.getElementById('copilotTypedText');
+        if (!el) return;
+        var text = 'Introducing Copilot';
+        var i = 0;
+        (function type() {
+          if (i <= text.length) {
+            el.textContent = text.slice(0, i);
+            i++;
+            setTimeout(type, 140);
+          }
+        })();
+      }
+    })();
+  </script>
+<script src="/auth.js"></script>
 </html>
