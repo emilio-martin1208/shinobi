@@ -203,8 +203,7 @@ async def run_pipeline(job_id):
         users.add_project(user_id, job_id, first_title, len(clip_results), clip_results[0]["video_url"])
 
     # Move the uploaded source video into the job's output dir so Copilot can
-    # pull additional clips from it later; it gets cleaned up with the rest
-    # of job_output_dir after the delay below.
+    # pull additional clips from it later.
     try:
         source_dest = os.path.join(job_output_dir, "source" + os.path.splitext(video_path)[1])
         shutil.move(video_path, source_dest)
@@ -212,8 +211,17 @@ async def run_pipeline(job_id):
     except OSError:
         pass
 
-    # Schedule cleanup of output dir after 1 hour
-    asyncio.create_task(_cleanup_after_delay(job_output_dir, 3600))
+    # Persist the result so saved projects can be reopened later from the profile page
+    with open(os.path.join(job_output_dir, "result.json"), "w") as f:
+        json.dump(job["result"], f)
+
+    if user_id and clip_results:
+        # Saved as a project on the user's profile — keep the output around
+        # so it can be reopened later instead of cleaning it up.
+        pass
+    else:
+        # Anonymous job — schedule cleanup of output dir after 1 hour
+        asyncio.create_task(_cleanup_after_delay(job_output_dir, 3600))
 
 
 async def _cleanup_after_delay(path, delay_seconds):
@@ -714,6 +722,67 @@ async def upload_avatar(request: Request, file: UploadFile = File(...)):
     avatar_url = f"/avatars/{filename}"
     users.set_avatar(user["id"], avatar_url)
     return ok({"avatar_url": avatar_url})
+
+
+@app.get("/api/project/{job_id}")
+async def get_project(job_id: str, request: Request):
+    user_id = _current_user_id(request)
+    if not user_id:
+        return err("Not logged in", status=401)
+    project = users.get_project(user_id, job_id)
+    if not project:
+        return err("Project not found", status=404)
+
+    job = jobs.get_job(job_id)
+    if job and job.get("result"):
+        return ok(job["result"])
+
+    result_path = os.path.join(OUTPUT_DIR, job_id, "result.json")
+    if not os.path.exists(result_path):
+        return err("Project data not found", status=404)
+    with open(result_path) as f:
+        return ok(json.load(f))
+
+
+@app.delete("/api/project/{job_id}")
+async def trash_project(job_id: str, request: Request):
+    user_id = _current_user_id(request)
+    if not user_id:
+        return err("Not logged in", status=401)
+    if not users.set_project_trashed(user_id, job_id, True):
+        return err("Project not found", status=404)
+    return ok({"job_id": job_id})
+
+
+@app.get("/api/projects/trash")
+async def get_trash(request: Request):
+    user_id = _current_user_id(request)
+    if not user_id:
+        return err("Not logged in", status=401)
+    return ok({"projects": users.list_trashed_projects(user_id)})
+
+
+@app.post("/api/project/{job_id}/restore")
+async def restore_project(job_id: str, request: Request):
+    user_id = _current_user_id(request)
+    if not user_id:
+        return err("Not logged in", status=401)
+    if not users.set_project_trashed(user_id, job_id, False):
+        return err("Project not found", status=404)
+    return ok({"job_id": job_id})
+
+
+@app.delete("/api/project/{job_id}/permanent")
+async def delete_project_permanent(job_id: str, request: Request):
+    user_id = _current_user_id(request)
+    if not user_id:
+        return err("Not logged in", status=401)
+    project = users.get_project(user_id, job_id)
+    if not project:
+        return err("Project not found", status=404)
+    users.delete_project(user_id, job_id)
+    shutil.rmtree(os.path.join(OUTPUT_DIR, job_id), ignore_errors=True)
+    return ok({"job_id": job_id})
 
 
 # ---------------------------------------------------------------------------

@@ -57,6 +57,9 @@ def _connect():
             created_at INTEGER NOT NULL
         )
     """)
+    project_cols = [r[1] for r in conn.execute("PRAGMA table_info(projects)").fetchall()]
+    if "trashed" not in project_cols:
+        conn.execute("ALTER TABLE projects ADD COLUMN trashed INTEGER NOT NULL DEFAULT 0")
     return conn
 
 
@@ -233,7 +236,7 @@ def list_projects(user_id):
     conn = _connect()
     rows = conn.execute(
         "SELECT job_id, title, clip_count, thumbnail_url, created_at FROM projects "
-        "WHERE user_id = ? ORDER BY created_at DESC",
+        "WHERE user_id = ? AND trashed = 0 ORDER BY created_at DESC",
         (user_id,),
     ).fetchall()
     conn.close()
@@ -241,3 +244,55 @@ def list_projects(user_id):
         {"job_id": r[0], "title": r[1], "clip_count": r[2], "thumbnail_url": r[3], "created_at": r[4]}
         for r in rows
     ]
+
+
+def list_trashed_projects(user_id):
+    conn = _connect()
+    rows = conn.execute(
+        "SELECT job_id, title, clip_count, thumbnail_url, created_at FROM projects "
+        "WHERE user_id = ? AND trashed = 1 ORDER BY created_at DESC",
+        (user_id,),
+    ).fetchall()
+    conn.close()
+    return [
+        {"job_id": r[0], "title": r[1], "clip_count": r[2], "thumbnail_url": r[3], "created_at": r[4]}
+        for r in rows
+    ]
+
+
+def get_project(user_id, job_id):
+    conn = _connect()
+    row = conn.execute(
+        "SELECT job_id, title, clip_count, thumbnail_url, created_at, trashed FROM projects "
+        "WHERE user_id = ? AND job_id = ?",
+        (user_id, job_id),
+    ).fetchone()
+    conn.close()
+    if not row:
+        return None
+    return {"job_id": row[0], "title": row[1], "clip_count": row[2], "thumbnail_url": row[3],
+            "created_at": row[4], "trashed": bool(row[5])}
+
+
+def set_project_trashed(user_id, job_id, trashed):
+    conn = _connect()
+    cur = conn.execute(
+        "UPDATE projects SET trashed = ? WHERE user_id = ? AND job_id = ?",
+        (1 if trashed else 0, user_id, job_id),
+    )
+    conn.commit()
+    changed = cur.rowcount > 0
+    conn.close()
+    return changed
+
+
+def delete_project(user_id, job_id):
+    conn = _connect()
+    cur = conn.execute(
+        "DELETE FROM projects WHERE user_id = ? AND job_id = ?",
+        (user_id, job_id),
+    )
+    conn.commit()
+    changed = cur.rowcount > 0
+    conn.close()
+    return changed

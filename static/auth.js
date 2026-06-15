@@ -196,9 +196,15 @@
   logoutBtn.className = 'auth-nav-btn';
   logoutBtn.textContent = 'Log out';
 
+  var trashLink = document.createElement('a');
+  trashLink.className = 'auth-nav-btn';
+  trashLink.href = '/profile.html#trash';
+  trashLink.textContent = 'Trash';
+
   nav.insertBefore(emailLabel, menuBtn);
   drawer.appendChild(loginBtn);
   drawer.appendChild(signupBtn);
+  drawer.appendChild(trashLink);
   drawer.appendChild(logoutBtn);
 
   // ---------------------------------------------------------------------
@@ -318,6 +324,7 @@
         signupBtn.style.display = loggedIn ? 'none' : '';
         emailLabel.style.display = loggedIn ? '' : 'none';
         logoutBtn.style.display = loggedIn ? '' : 'none';
+        trashLink.style.display = loggedIn ? '' : 'none';
         if (loggedIn) {
           var name = json.data.username || json.data.email;
           var avatarUrl = json.data.avatar_url || '/logo-final.png';
@@ -338,5 +345,6 @@
 
   emailLabel.style.display = 'none';
   logoutBtn.style.display = 'none';
+  trashLink.style.display = 'none';
   refreshAuthUI();
 })();

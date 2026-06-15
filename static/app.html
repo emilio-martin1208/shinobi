@@ -500,6 +500,24 @@ async function loadResults() {
   document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
+async function loadProjectFromQuery() {
+  const params = new URLSearchParams(window.location.search);
+  const jobId = params.get('job');
+  if (!jobId) return;
+  try {
+    const res = await fetch('/api/project/' + encodeURIComponent(jobId));
+    const json = await res.json();
+    if (!json.success) { alert(json.error || 'Could not load project'); return; }
+    currentJobId = jobId;
+    lastResult = json.data;
+    document.getElementById('inputPanel').classList.add('hidden');
+    document.getElementById('progressPanel').classList.add('hidden');
+    renderResults();
+    document.getElementById('resultsPanel').classList.remove('hidden');
+    document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch (e) { /* ignore */ }
+}
+
 function renderResults() {
   const container = document.getElementById('clips');
   container.innerHTML = '';
@@ -604,6 +622,8 @@ async function postAll() {
       startGreetingTypewriter(name);
     }).catch(function () { startGreetingTypewriter('there'); });
   })();
+
+  loadProjectFromQuery();
 </script>
 <script src="/auth.js"></script>
 <script src="/copilot.js"></script>

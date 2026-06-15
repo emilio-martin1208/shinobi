@@ -116,15 +116,36 @@ button.secondary:hover { background: rgba(255,255,255,0.07); border-color: #3a35
 }
 .project-card {
   background: var(--panel); border: 1px solid #ffffff; border-radius: 0px;
-  padding: 12px;
+  padding: 12px; position: relative; cursor: pointer; transition: border-color 0.2s;
 }
+.project-card:hover { border-color: var(--purple); }
 .project-card video {
   width: 100%; aspect-ratio: 9/16; object-fit: cover; background: #000;
   border-radius: 0px; margin-bottom: 8px;
 }
 .project-card .project-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
 .project-card .project-meta { font-size: 11.5px; color: var(--muted); }
+.project-delete-btn {
+  position: absolute; top: 8px; right: 8px; width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(13,13,20,0.85); border: 1px solid #ffffff; border-radius: 0px;
+  color: var(--text); cursor: pointer; opacity: 0; transition: opacity 0.15s, background 0.15s, border-color 0.15s;
+  z-index: 2;
+}
+.project-card:hover .project-delete-btn { opacity: 1; }
+.project-delete-btn:hover { background: var(--red); border-color: var(--red); }
+.project-delete-btn svg { width: 14px; height: 14px; }
 .empty-state { color: var(--muted); font-size: 14px; }
+
+/* Trash */
+.trash-toggle { font-size: 13px; color: var(--muted); background: none; border: none; cursor: pointer; text-decoration: underline; padding: 0; margin-left: 8px; }
+.trash-toggle:hover { color: var(--text); }
+.trash-list { flex-direction: column; gap: 8px; }
+.trash-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; }
+.trash-card .project-title { font-size: 13px; font-weight: 600; }
+.trash-card .project-meta { font-size: 11.5px; color: var(--muted); }
+.trash-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.trash-actions button { font-size: 12px; padding: 6px 10px; }
 
 /* Logged-out state */
 #loggedOut { text-align: center; padding: 80px 24px; }
@@ -203,6 +224,11 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding: 40px
       <div class="projects-grid" id="projectsGrid">
         <div class="empty-state">No projects yet — repurpose a video to see it here.</div>
       </div>
+
+      <h2 id="trashHeading" style="display:none;">Trash <button class="trash-toggle" id="trashToggle" onclick="toggleTrash()">hide</button></h2>
+      <div class="panel trash-list" id="trashPanel" style="display:none; padding:8px;">
+        <div class="empty-state" id="trashEmpty">Trash is empty.</div>
+      </div>
     </div>
   </div>
 
@@ -257,7 +283,10 @@ async function loadProfile() {
       grid.innerHTML = '<div class="empty-state">No projects yet — repurpose a video to see it here.</div>';
     } else {
       grid.innerHTML = projects.map(p => `
-        <div class="project-card">
+        <div class="project-card" onclick="openProject('${p.job_id}')">
+          <button class="project-delete-btn" title="Move to trash" onclick="trashProject(event, '${p.job_id}')">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m3 0-1 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1L5 6h14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
           <video src="${p.thumbnail_url}" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>
           <div class="project-title">${escapeHtml(p.title || 'Untitled project')}</div>
           <div class="project-meta">${p.clip_count} clip${p.clip_count === 1 ? '' : 's'} &middot; ${new Date(p.created_at * 1000).toLocaleDateString()}</div>
@@ -265,6 +294,78 @@ async function loadProfile() {
       `).join('');
     }
   } catch (e) { /* ignore */ }
+}
+
+function openProject(jobId) {
+  window.location.href = '/app.html?job=' + encodeURIComponent(jobId);
+}
+
+async function trashProject(event, jobId) {
+  event.stopPropagation();
+  if (!confirm('Move this project to trash?')) return;
+  const res = await fetch('/api/project/' + encodeURIComponent(jobId), { method: 'DELETE' });
+  const json = await res.json();
+  if (json.success) {
+    loadProfile();
+    if (document.getElementById('trashPanel').style.display !== 'none') loadTrash();
+  }
+}
+
+function toggleTrash() {
+  const panel = document.getElementById('trashPanel');
+  const toggle = document.getElementById('trashToggle');
+  const showing = panel.style.display !== 'none';
+  if (showing) {
+    panel.style.display = 'none';
+    toggle.textContent = 'show';
+  } else {
+    panel.style.display = 'flex';
+    toggle.textContent = 'hide';
+    loadTrash();
+  }
+}
+
+async function loadTrash() {
+  document.getElementById('trashHeading').style.display = '';
+  try {
+    const res = await fetch('/api/projects/trash');
+    const json = await res.json();
+    if (!json.success) return;
+    const panel = document.getElementById('trashPanel');
+    const projects = json.data.projects || [];
+    if (projects.length === 0) {
+      panel.innerHTML = '<div class="empty-state" id="trashEmpty">Trash is empty.</div>';
+      return;
+    }
+    panel.innerHTML = projects.map(p => `
+      <div class="trash-card">
+        <div>
+          <div class="project-title">${escapeHtml(p.title || 'Untitled project')}</div>
+          <div class="project-meta">${p.clip_count} clip${p.clip_count === 1 ? '' : 's'} &middot; ${new Date(p.created_at * 1000).toLocaleDateString()}</div>
+        </div>
+        <div class="trash-actions">
+          <button class="secondary" onclick="restoreProject('${p.job_id}')">Restore</button>
+          <button class="secondary" onclick="deleteProjectForever('${p.job_id}')">Delete forever</button>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) { /* ignore */ }
+}
+
+async function restoreProject(jobId) {
+  const res = await fetch('/api/project/' + encodeURIComponent(jobId) + '/restore', { method: 'POST' });
+  const json = await res.json();
+  if (json.success) {
+    loadTrash();
+    loadProfile();
+  }
+}
+
+async function deleteProjectForever(jobId) {
+  if (!confirm('Permanently delete this project? This cannot be undone.')) return;
+  const res = await fetch('/api/project/' + encodeURIComponent(jobId) + '/permanent', { method: 'DELETE' });
+  const json = await res.json();
+  if (json.success) loadTrash();
 }
 
 function escapeHtml(s) {
@@ -345,6 +446,7 @@ function connect(platform) {
 
 loadProfile();
 refreshAuthStatus();
+if (window.location.hash === '#trash') toggleTrash();
 </script>
 <script src="/auth.js"></script>
 </body>
