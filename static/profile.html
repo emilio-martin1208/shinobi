@@ -54,6 +54,12 @@ nav {
 
 .wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 100px; position: relative; z-index: 1; }
 h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 4px; }
+.typed-cursor {
+  display: inline-block;
+  margin-left: 2px;
+  animation: typed-blink 0.9s step-end infinite;
+}
+@keyframes typed-blink { 50% { opacity: 0; } }
 .sub { color: var(--muted); margin: 0 0 32px; font-size: 14px; }
 h2 {
   font-size: 20px; font-weight: 700; margin: 40px 0 12px;
@@ -144,7 +150,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding: 40px
     </div>
 
     <div id="profileContent" style="display:none;">
-      <h1 id="profileEmail">Profile</h1>
+      <h1 id="profileEmail"><span id="profileGreetingText"></span><span class="typed-cursor">|</span></h1>
       <p class="sub">Manage your bio, connected accounts, and past projects.</p>
       <a class="btn-primary use-shinobi-btn" href="/app.html" style="display:inline-block; text-decoration:none; margin-bottom: 16px;">Use Shinobi</a>
 
@@ -203,6 +209,32 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding: 40px
   <footer>Shinobi. — repurpose your video, instantly.</footer>
 
 <script>
+const PROFILE_GREETINGS = [
+  'Hello {name}, how are we today?',
+  'Welcome back, {name} — ready to create?',
+  '{name}, good to see you again.',
+  'Hey {name}, your profile is looking sharp.',
+  'Looking good, {name}. What\'s next?',
+  '{name}, let\'s make something great today.',
+  'Welcome, {name} — your projects await.'
+];
+
+function startProfileGreeting(name) {
+  const el = document.getElementById('profileGreetingText');
+  if (!el) return;
+  const template = PROFILE_GREETINGS[Math.floor(Math.random() * PROFILE_GREETINGS.length)];
+  const text = template.replace('{name}', name || 'there');
+  let i = 0;
+  el.textContent = '';
+  (function type() {
+    if (i <= text.length) {
+      el.textContent = text.slice(0, i);
+      i++;
+      setTimeout(type, 45);
+    }
+  })();
+}
+
 async function loadProfile() {
   try {
     const res = await fetch('/api/profile');
@@ -214,7 +246,7 @@ async function loadProfile() {
     }
     document.getElementById('loggedOut').style.display = 'none';
     document.getElementById('profileContent').style.display = '';
-    document.getElementById('profileEmail').textContent = json.data.username || json.data.email;
+    startProfileGreeting(json.data.username || json.data.email);
     document.getElementById('bio').value = json.data.bio || '';
     document.getElementById('username').value = json.data.username || '';
     if (json.data.avatar_url) document.getElementById('avatarPreview').src = json.data.avatar_url;
@@ -266,7 +298,7 @@ async function saveUsername() {
   if (json.success) {
     status.textContent = 'Saved';
     status.style.color = 'var(--green)';
-    document.getElementById('profileEmail').textContent = json.data.username || '';
+    startProfileGreeting(json.data.username || '');
     if (window.shinobiRefreshAuthUI) window.shinobiRefreshAuthUI();
   } else {
     status.textContent = json.error || 'Error';
