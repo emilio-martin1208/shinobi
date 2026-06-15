@@ -198,7 +198,7 @@
 
   var trashLink = document.createElement('a');
   trashLink.className = 'auth-nav-btn';
-  trashLink.href = '/profile.html#trash';
+  trashLink.href = '/trash.html';
   trashLink.textContent = 'Trash';
 
   nav.insertBefore(emailLabel, menuBtn);

@@ -137,16 +137,6 @@ button.secondary:hover { background: rgba(255,255,255,0.07); border-color: #3a35
 .project-delete-btn svg { width: 14px; height: 14px; }
 .empty-state { color: var(--muted); font-size: 14px; }
 
-/* Trash */
-.trash-toggle { font-size: 13px; color: var(--muted); background: none; border: none; cursor: pointer; text-decoration: underline; padding: 0; margin-left: 8px; }
-.trash-toggle:hover { color: var(--text); }
-.trash-list { flex-direction: column; gap: 8px; }
-.trash-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; }
-.trash-card .project-title { font-size: 13px; font-weight: 600; }
-.trash-card .project-meta { font-size: 11.5px; color: var(--muted); }
-.trash-actions { display: flex; gap: 8px; flex-shrink: 0; }
-.trash-actions button { font-size: 12px; padding: 6px 10px; }
-
 /* Logged-out state */
 #loggedOut { text-align: center; padding: 80px 24px; }
 #loggedOut p { color: var(--muted); }
@@ -224,11 +214,6 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding: 40px
       <div class="projects-grid" id="projectsGrid">
         <div class="empty-state">No projects yet — repurpose a video to see it here.</div>
       </div>
-
-      <h2 id="trashHeading" style="display:none;">Trash <button class="trash-toggle" id="trashToggle" onclick="toggleTrash()">hide</button></h2>
-      <div class="panel trash-list" id="trashPanel" style="display:none; padding:8px;">
-        <div class="empty-state" id="trashEmpty">Trash is empty.</div>
-      </div>
     </div>
   </div>
 
@@ -305,67 +290,7 @@ async function trashProject(event, jobId) {
   if (!confirm('Move this project to trash?')) return;
   const res = await fetch('/api/project/' + encodeURIComponent(jobId), { method: 'DELETE' });
   const json = await res.json();
-  if (json.success) {
-    loadProfile();
-    if (document.getElementById('trashPanel').style.display !== 'none') loadTrash();
-  }
-}
-
-function toggleTrash() {
-  const panel = document.getElementById('trashPanel');
-  const toggle = document.getElementById('trashToggle');
-  const showing = panel.style.display !== 'none';
-  if (showing) {
-    panel.style.display = 'none';
-    toggle.textContent = 'show';
-  } else {
-    panel.style.display = 'flex';
-    toggle.textContent = 'hide';
-    loadTrash();
-  }
-}
-
-async function loadTrash() {
-  document.getElementById('trashHeading').style.display = '';
-  try {
-    const res = await fetch('/api/projects/trash');
-    const json = await res.json();
-    if (!json.success) return;
-    const panel = document.getElementById('trashPanel');
-    const projects = json.data.projects || [];
-    if (projects.length === 0) {
-      panel.innerHTML = '<div class="empty-state" id="trashEmpty">Trash is empty.</div>';
-      return;
-    }
-    panel.innerHTML = projects.map(p => `
-      <div class="trash-card">
-        <div>
-          <div class="project-title">${escapeHtml(p.title || 'Untitled project')}</div>
-          <div class="project-meta">${p.clip_count} clip${p.clip_count === 1 ? '' : 's'} &middot; ${new Date(p.created_at * 1000).toLocaleDateString()}</div>
-        </div>
-        <div class="trash-actions">
-          <button class="secondary" onclick="restoreProject('${p.job_id}')">Restore</button>
-          <button class="secondary" onclick="deleteProjectForever('${p.job_id}')">Delete forever</button>
-        </div>
-      </div>
-    `).join('');
-  } catch (e) { /* ignore */ }
-}
-
-async function restoreProject(jobId) {
-  const res = await fetch('/api/project/' + encodeURIComponent(jobId) + '/restore', { method: 'POST' });
-  const json = await res.json();
-  if (json.success) {
-    loadTrash();
-    loadProfile();
-  }
-}
-
-async function deleteProjectForever(jobId) {
-  if (!confirm('Permanently delete this project? This cannot be undone.')) return;
-  const res = await fetch('/api/project/' + encodeURIComponent(jobId) + '/permanent', { method: 'DELETE' });
-  const json = await res.json();
-  if (json.success) loadTrash();
+  if (json.success) loadProfile();
 }
 
 function escapeHtml(s) {
@@ -446,7 +371,6 @@ function connect(platform) {
 
 loadProfile();
 refreshAuthStatus();
-if (window.location.hash === '#trash') toggleTrash();
 </script>
 <script src="/auth.js"></script>
 </body>
