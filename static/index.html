@@ -202,6 +202,26 @@
   }
   .reveal-right.is-visible { opacity: 1; transform: translateX(0); }
 
+  /* ===== Purple gradient on all bold headings ===== */
+  h1, h2, h3, h4, .logo {
+    background: linear-gradient(135deg, #ddd6fe 0%, #8b5cf6 35%, #5a41ec 60%, #7a1f3d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  h4.feature-bad {
+    background: none;
+    -webkit-text-fill-color: var(--red);
+    color: var(--red);
+  }
+  /* Katana heading keeps its own white-to-purple gradient */
+  .katana-intro-header h2 {
+    background: linear-gradient(135deg, #f3f1f7 30%, #c4b5fd 70%, #ff6b6b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
   /* ===== Katana 5.5 intro ===== */
   .katana-intro {
     position: relative;
