@@ -418,30 +418,39 @@
     100% { opacity: 1; filter: blur(0);   transform: scale(1); }
   }
 
-  /* ===== How it works (steps) ===== */
-  .steps {
+  /* ===== How it works (steps — scroll-driven) ===== */
+  .steps-wrapper {
     position: relative; z-index: 1;
-    max-width: 680px; margin: 64px auto 96px; padding: 0 24px;
+    height: 600vh;
+  }
+  .steps-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+  }
+  .steps {
+    max-width: 680px; width: 100%; padding: 0 24px;
     display: grid;
   }
   .step {
     grid-area: 1 / 1;
     display: flex; gap: 24px; align-items: flex-start;
-    padding: 40px 40px;
+    padding: 40px;
     background: var(--bg-soft);
     border: 1px solid rgba(255,255,255,0.1);
     box-shadow: 0 16px 48px rgba(0,0,0,0.5);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.7s ease;
+    transition: opacity 0.5s ease;
   }
-  .step.is-active {
-    opacity: 1;
-    pointer-events: auto;
-  }
+  .step.is-active { opacity: 1; pointer-events: auto; }
   .steps-dots {
     display: flex; justify-content: center; gap: 8px;
-    margin-top: 24px;
   }
   .steps-dot {
     width: 6px; height: 6px; border-radius: 50%;
@@ -449,10 +458,7 @@
     transition: background 0.3s ease, transform 0.3s ease;
     cursor: pointer;
   }
-  .steps-dot.is-active {
-    background: var(--purple);
-    transform: scale(1.3);
-  }
+  .steps-dot.is-active { background: var(--purple); transform: scale(1.3); }
   .step-num {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     font-size: 13px; font-weight: 700;
@@ -638,51 +644,55 @@
     </div>
   </section>
 
-  <div id="how-it-works" class="steps">
-    <div class="step">
-      <div class="step-num">01</div>
-      <div class="step-body">
-        <h3>Finds the moments</h3>
-        <p>Claude reads your full transcript — not just keywords — and scores every segment for hook strength, emotional payoff, and how well it stands alone. It picks the moments that actually make people stop scrolling.</p>
+  <div class="steps-wrapper" id="how-it-works">
+    <div class="steps-sticky">
+      <div class="steps" id="stepsCarousel">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <h3>Finds the moments</h3>
+            <p>Claude reads your full transcript — not just keywords — and scores every segment for hook strength, emotional payoff, and how well it stands alone. It picks the moments that actually make people stop scrolling.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <h3>Cuts the silence</h3>
+            <p>Dead air, "ums," and long pauses are detected automatically and trimmed out — frame-accurate — so every clip feels tight and high-energy without you touching a timeline.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <h3>Goes vertical</h3>
+            <p>Each clip is reframed to 9:16 with smart cropping that tracks faces and motion, so your subject stays centered — no black bars, no stretching.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div class="step-body">
+            <h3>Burns in captions</h3>
+            <p>Animated, word-by-word subtitles are burned directly into the video — styled to match the energy of short-form platforms and ready to post.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">05</div>
+          <div class="step-body">
+            <h3>Writes the copy</h3>
+            <p>For every clip, Shinobi writes a title, description, tags, and a Reddit-ready framing — tuned to your tone, audience, and niche.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">06</div>
+          <div class="step-body">
+            <h3>Posts everywhere</h3>
+            <p>Connect your accounts once, then publish to YouTube Shorts, X, and Reddit simultaneously with a single click.</p>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="step">
-      <div class="step-num">02</div>
-      <div class="step-body">
-        <h3>Cuts the silence</h3>
-        <p>Dead air, "ums," and long pauses are detected automatically and trimmed out — frame-accurate — so every clip feels tight and high-energy without you touching a timeline.</p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">03</div>
-      <div class="step-body">
-        <h3>Goes vertical</h3>
-        <p>Each clip is reframed to 9:16 with smart cropping that tracks faces and motion, so your subject stays centered — no black bars, no stretching.</p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">04</div>
-      <div class="step-body">
-        <h3>Burns in captions</h3>
-        <p>Animated, word-by-word subtitles are burned directly into the video — styled to match the energy of short-form platforms and ready to post.</p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">05</div>
-      <div class="step-body">
-        <h3>Writes the copy</h3>
-        <p>For every clip, Shinobi writes a title, description, tags, and a Reddit-ready framing — tuned to your tone, audience, and niche.</p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">06</div>
-      <div class="step-body">
-        <h3>Posts everywhere</h3>
-        <p>Connect your accounts once, then publish to YouTube Shorts, X, and Reddit simultaneously with a single click.</p>
-      </div>
+      <div class="steps-dots" id="stepsDots"></div>
     </div>
   </div>
-  <div class="steps-dots" id="stepsDots"></div>
 
   <div class="katana-intro">
     <div class="katana-intro-inner">
@@ -876,43 +886,44 @@
         })();
       }
 
-      var stepsEl = document.getElementById('how-it-works');
+      var stepsWrapperEl = document.getElementById('how-it-works');
+      var stepsCarouselEl = document.getElementById('stepsCarousel');
       var dotsEl = document.getElementById('stepsDots');
-      if (stepsEl) {
-        var stepCards = Array.prototype.slice.call(stepsEl.querySelectorAll('.step'));
+      if (stepsWrapperEl && stepsCarouselEl) {
+        var stepCards = Array.prototype.slice.call(stepsCarouselEl.querySelectorAll('.step'));
         var dots = [];
-        var current = 0;
-        var stepTimer = null;
+        var currentStep = -1;
 
         stepCards.forEach(function (_, i) {
           var d = document.createElement('div');
           d.className = 'steps-dot';
-          d.addEventListener('click', function () { goTo(i); });
           dotsEl.appendChild(d);
           dots.push(d);
         });
 
-        function goTo(idx) {
-          stepCards[current].classList.remove('is-active');
-          dots[current].classList.remove('is-active');
-          current = idx;
-          stepCards[current].classList.add('is-active');
-          dots[current].classList.add('is-active');
-          clearInterval(stepTimer);
-          stepTimer = setInterval(advance, 2800);
-        }
-
-        function advance() {
-          goTo((current + 1) % stepCards.length);
-        }
-
-        var stepsObs = new IntersectionObserver(function (entries) {
-          if (entries[0].isIntersecting) {
-            stepsObs.disconnect();
-            goTo(0);
+        function showStep(idx) {
+          if (idx === currentStep) return;
+          if (currentStep >= 0) {
+            stepCards[currentStep].classList.remove('is-active');
+            dots[currentStep].classList.remove('is-active');
           }
-        }, { threshold: 0.1 });
-        stepsObs.observe(stepsEl);
+          currentStep = idx;
+          stepCards[idx].classList.add('is-active');
+          dots[idx].classList.add('is-active');
+        }
+
+        function onScroll() {
+          var rect = stepsWrapperEl.getBoundingClientRect();
+          var scrolled = -rect.top;
+          var scrollRange = stepsWrapperEl.offsetHeight - window.innerHeight;
+          if (scrolled < 0) { showStep(0); return; }
+          if (scrolled > scrollRange) { showStep(stepCards.length - 1); return; }
+          var idx = Math.min(Math.floor((scrolled / scrollRange) * stepCards.length), stepCards.length - 1);
+          showStep(idx);
+        }
+
+        showStep(0);
+        window.addEventListener('scroll', onScroll, { passive: true });
       }
 
       var allReveal = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
