@@ -625,36 +625,67 @@
 
   /* ===== Splash screen ===== */
   #splash {
-    position: fixed;
-    inset: 0;
-    z-index: 99999;
+    position: fixed; inset: 0; z-index: 99999;
     background: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     transition: opacity 0.7s ease;
   }
-  #splash.out {
-    opacity: 0;
-    pointer-events: none;
+  #splash.out { opacity: 0; pointer-events: none; }
+  #splash-stage {
+    display: grid;
+    place-items: center;
+    filter: drop-shadow(0 0 40px rgba(139,92,246,0.65));
   }
-  #splash-inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-  }
-  #splash-logo {
+  #splash-s-wrap {
+    grid-area: 1 / 1;
+    position: relative;
     width: min(38vw, 200px);
-    filter: drop-shadow(0 0 36px rgba(139,92,246,0.7));
+    aspect-ratio: 1;
     clip-path: polygon(0% 0%, 0% 0%, -25% 100%, -25% 100%);
     animation: brush-reveal 1.9s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
   }
   @keyframes brush-reveal {
-    0%   { clip-path: polygon(  0%   0%,   0%   0%,  -25% 100%,  -25% 100%); }
-    100% { clip-path: polygon(  0%   0%,  125%   0%,  100% 100%,  -25% 100%); }
+    0%   { clip-path: polygon(0% 0%,   0%   0%, -25% 100%, -25% 100%); }
+    100% { clip-path: polygon(0% 0%, 125%   0%, 100% 100%, -25% 100%); }
+  }
+  .s-half {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: contain;
+  }
+  .s-top { clip-path: inset(0 0 50% 0); }
+  .s-bot { clip-path: inset(50% 0 0 0); }
+  #splash-slash {
+    position: absolute;
+    top: 50%; left: -20%; width: 140%; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95) 30%, white 50%, rgba(255,255,255,0.95) 70%, transparent);
+    transform: rotate(-6deg) translateX(-115%);
+    pointer-events: none; z-index: 10; opacity: 0;
+  }
+  #splash-s-wrap.is-cutting #splash-slash {
+    animation: splash-slash-sweep 0.4s ease-out forwards;
+  }
+  #splash-s-wrap.is-cutting .s-top {
+    animation: s-top-exit 0.55s 0.28s ease forwards;
+  }
+  #splash-s-wrap.is-cutting .s-bot {
+    animation: s-bot-exit 0.55s 0.28s ease forwards;
+  }
+  @keyframes splash-slash-sweep {
+    0%   { opacity: 0; transform: rotate(-6deg) translateX(-115%); }
+    15%  { opacity: 1; }
+    85%  { opacity: 1; }
+    100% { opacity: 0; transform: rotate(-6deg) translateX(115%); }
+  }
+  @keyframes s-top-exit {
+    0%   { clip-path: inset(0 0 50% 0); transform: translateY(0);    opacity: 1; }
+    100% { clip-path: inset(0 0 50% 0); transform: translateY(-70px); opacity: 0; }
+  }
+  @keyframes s-bot-exit {
+    0%   { clip-path: inset(50% 0 0 0); transform: translateY(0);   opacity: 1; }
+    100% { clip-path: inset(50% 0 0 0); transform: translateY(70px); opacity: 0; }
   }
   #splash-wordmark {
+    grid-area: 1 / 1;
     font-family: 'Molgan', Arial, sans-serif;
     font-size: clamp(42px, 9vw, 80px);
     font-weight: 700;
@@ -664,19 +695,22 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     opacity: 0;
-    animation: wordmark-in 0.8s ease 2.1s forwards;
+    transform: translateY(12px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    white-space: nowrap;
   }
-  @keyframes wordmark-in {
-    0%   { opacity: 0; transform: translateY(10px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
+  #splash-wordmark.is-visible { opacity: 1; transform: translateY(0); }
 </style>
 </head>
 <body>
 
   <div id="splash">
-    <div id="splash-inner">
-      <img id="splash-logo" src="/logo-final.png" alt="Shinobi">
+    <div id="splash-stage">
+      <div id="splash-s-wrap">
+        <img class="s-half s-top" src="/logo-final.png" alt="">
+        <img class="s-half s-bot" src="/logo-final.png" alt="">
+        <div id="splash-slash"></div>
+      </div>
       <div id="splash-wordmark">SHINOBI.</div>
     </div>
   </div>
@@ -924,13 +958,21 @@
   <script>
     // Splash screen
     (function () {
-      var splash = document.getElementById('splash');
-      if (splash) {
-        setTimeout(function () {
-          splash.classList.add('out');
-          setTimeout(function () { splash.style.display = 'none'; }, 750);
-        }, 4500);
-      }
+      var splash    = document.getElementById('splash');
+      var sWrap     = document.getElementById('splash-s-wrap');
+      var wordmark  = document.getElementById('splash-wordmark');
+      if (!splash) return;
+      // Trigger cut after brush reveal (0.2s delay + 1.9s anim + 0.1s buffer)
+      setTimeout(function () {
+        sWrap.classList.add('is-cutting');
+        // Wordmark rises in after halves have separated (~0.65s into cut)
+        setTimeout(function () { wordmark.classList.add('is-visible'); }, 650);
+      }, 2250);
+      // Fade out entire splash
+      setTimeout(function () {
+        splash.classList.add('out');
+        setTimeout(function () { splash.style.display = 'none'; }, 750);
+      }, 4800);
     })();
 
     (function () {
