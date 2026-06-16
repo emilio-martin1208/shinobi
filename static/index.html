@@ -422,28 +422,37 @@
   .steps {
     position: relative; z-index: 1;
     max-width: 680px; margin: 64px auto 96px; padding: 0 24px;
-    display: flex; flex-direction: column;
+    display: grid;
   }
   .step {
+    grid-area: 1 / 1;
     display: flex; gap: 24px; align-items: flex-start;
-    padding: 28px 32px;
+    padding: 40px 40px;
     background: var(--bg-soft);
     border: 1px solid rgba(255,255,255,0.1);
-    margin-bottom: -1px;
-    position: relative;
-    box-shadow: 0 16px 48px rgba(0,0,0,0.55);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5);
     opacity: 0;
-    transform: translateY(56px) scale(0.97);
-    transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
+    pointer-events: none;
+    transition: opacity 0.7s ease;
   }
-  .step:hover { background: rgba(90,65,236,0.04); }
-  .step:nth-child(1) { z-index: 1; }
-  .step:nth-child(2) { z-index: 2; }
-  .step:nth-child(3) { z-index: 3; }
-  .step:nth-child(4) { z-index: 4; }
-  .step:nth-child(5) { z-index: 5; }
-  .step:nth-child(6) { z-index: 6; }
-  .step.is-stacked { opacity: 1; transform: translateY(0) scale(1); }
+  .step.is-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .steps-dots {
+    display: flex; justify-content: center; gap: 8px;
+    margin-top: 24px;
+  }
+  .steps-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transition: background 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+  }
+  .steps-dot.is-active {
+    background: var(--purple);
+    transform: scale(1.3);
+  }
   .step-num {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     font-size: 13px; font-weight: 700;
@@ -452,7 +461,7 @@
     flex-shrink: 0; width: 32px;
     padding-top: 4px;
   }
-  .step-body h3 { font-size: 18px; margin: 0 0 8px; font-weight: 700; }
+  .step-body h3 { font-size: 20px; margin: 0 0 10px; font-weight: 700; }
   .step-body p { font-size: 14px; color: var(--muted); margin: 0; line-height: 1.7; max-width: 520px; }
 
   /* ===== Models (pick your blade) ===== */
@@ -673,6 +682,7 @@
       </div>
     </div>
   </div>
+  <div class="steps-dots" id="stepsDots"></div>
 
   <div class="katana-intro">
     <div class="katana-intro-inner">
@@ -867,15 +877,41 @@
       }
 
       var stepsEl = document.getElementById('how-it-works');
+      var dotsEl = document.getElementById('stepsDots');
       if (stepsEl) {
+        var stepCards = Array.prototype.slice.call(stepsEl.querySelectorAll('.step'));
+        var dots = [];
+        var current = 0;
+        var stepTimer = null;
+
+        stepCards.forEach(function (_, i) {
+          var d = document.createElement('div');
+          d.className = 'steps-dot';
+          d.addEventListener('click', function () { goTo(i); });
+          dotsEl.appendChild(d);
+          dots.push(d);
+        });
+
+        function goTo(idx) {
+          stepCards[current].classList.remove('is-active');
+          dots[current].classList.remove('is-active');
+          current = idx;
+          stepCards[current].classList.add('is-active');
+          dots[current].classList.add('is-active');
+          clearInterval(stepTimer);
+          stepTimer = setInterval(advance, 2800);
+        }
+
+        function advance() {
+          goTo((current + 1) % stepCards.length);
+        }
+
         var stepsObs = new IntersectionObserver(function (entries) {
           if (entries[0].isIntersecting) {
             stepsObs.disconnect();
-            stepsEl.querySelectorAll('.step').forEach(function (step, i) {
-              setTimeout(function () { step.classList.add('is-stacked'); }, i * 160);
-            });
+            goTo(0);
           }
-        }, { threshold: 0.05 });
+        }, { threshold: 0.1 });
         stepsObs.observe(stepsEl);
       }
 
