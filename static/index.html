@@ -174,36 +174,6 @@
   }
   .btn-ghost:hover { background: var(--panel-2); border-color: var(--purple); }
 
-  /* ===== Feature strip ===== */
-  .copilot-intro {
-    position: relative; z-index: 1;
-    max-width: 1100px; margin: 32px auto 80px; padding: 0 24px;
-    display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;
-  }
-  .copilot-intro h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -0.02em; margin: 8px 0 12px; }
-  .copilot-intro.reveal {
-    opacity: 0;
-    transform: none;
-    transition: opacity 1.4s ease;
-  }
-  .copilot-intro.reveal.is-visible { opacity: 1; }
-  .typed-cursor {
-    display: inline-block;
-    margin-left: 2px;
-    animation: typed-blink 0.9s step-end infinite;
-  }
-  @keyframes typed-blink { 50% { opacity: 0; } }
-  .copilot-intro-video {
-    border: 1px solid #ffffff;
-    background: var(--panel);
-    overflow: hidden;
-    aspect-ratio: 16 / 10;
-  }
-  .copilot-intro-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
-  @media (max-width: 760px) {
-    .copilot-intro { grid-template-columns: 1fr; }
-  }
-
   /* ===== Scroll reveal ===== */
   .reveal {
     opacity: 0;
@@ -454,19 +424,6 @@
     </div>
   </div>
 
-  <div class="copilot-intro reveal">
-    <div class="copilot-intro-text">
-      <div class="eyebrow"><span class="pulse"></span> <span style="color: var(--green);">New</span></div>
-      <h2 id="copilotTypedHeading"><span id="copilotTypedText"></span><span class="typed-cursor">|</span></h2>
-      <p class="sub">Tell Shinobi exactly what you want — "make sure you include the part where I scream" — and it'll find it, cut it, and write the copy around it. Right from the floating assistant in the corner.</p>
-    </div>
-    <div class="copilot-intro-video">
-      <video autoplay loop muted playsinline>
-        <source src="/copilot-demo.mp4" type="video/mp4">
-      </video>
-    </div>
-  </div>
-
   <div class="models-section">
     <div class="models-header">
       <div class="eyebrow"><span class="pulse"></span> Choose your edge</div>
@@ -524,25 +481,11 @@
           if (entry.isIntersecting) {
             entry.target.classList.add('is-visible');
             observer.unobserve(entry.target);
-            if (entry.target.classList.contains('copilot-intro')) startTypewriter();
           }
         });
       }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
       items.forEach(function (el) { observer.observe(el); });
 
-      function startTypewriter() {
-        var el = document.getElementById('copilotTypedText');
-        if (!el) return;
-        var text = 'Introducing Copilot';
-        var i = 0;
-        (function type() {
-          if (i <= text.length) {
-            el.textContent = text.slice(0, i);
-            i++;
-            setTimeout(type, 140);
-          }
-        })();
-      }
     })();
   </script>
 <script src="/auth.js"></script>

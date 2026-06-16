@@ -112,6 +112,18 @@ A full day of UI polish and new profile features.
 
 ---
 
+## Day 6 — 2026-06-16: Copilot removed, model picker added
+
+- **Copilot scrapped** — removed the Copilot chat widget, all backend routes
+  (`/api/copilot`, `/api/copilot/edit`), and the landing-page intro section
+  entirely; `copilot.js` is no longer loaded
+- **Model picker in the tool** — replaced the localStorage-based hidden model
+  setting with a visible `<select>` dropdown (Katana 5.5 / Wakizashi 4.5 /
+  Kunai 4.5 / Shuriken 3.5) sitting right beside the YouTube URL Fetch button,
+  so the active model is always visible and changeable before every run
+
+---
+
 ## Where things stand
 
 - Core pipeline, accounts, Copilot live-editing, and project history/trash are
