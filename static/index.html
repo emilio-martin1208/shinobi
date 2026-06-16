@@ -421,25 +421,39 @@
   /* ===== How it works (steps) ===== */
   .steps {
     position: relative; z-index: 1;
-    max-width: 720px; margin: 64px auto 96px; padding: 0 24px;
-    display: flex; flex-direction: column; gap: 0;
+    max-width: 680px; margin: 64px auto 96px; padding: 0 24px;
+    display: flex; flex-direction: column;
   }
   .step {
     display: flex; gap: 24px; align-items: flex-start;
-    padding: 32px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 28px 32px;
+    background: var(--bg-soft);
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: -1px;
+    position: relative;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.55);
+    opacity: 0;
+    transform: translateY(56px) scale(0.97);
+    transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
   }
-  .step:last-child { border-bottom: none; }
+  .step:hover { background: rgba(90,65,236,0.04); }
+  .step:nth-child(1) { z-index: 1; }
+  .step:nth-child(2) { z-index: 2; }
+  .step:nth-child(3) { z-index: 3; }
+  .step:nth-child(4) { z-index: 4; }
+  .step:nth-child(5) { z-index: 5; }
+  .step:nth-child(6) { z-index: 6; }
+  .step.is-stacked { opacity: 1; transform: translateY(0) scale(1); }
   .step-num {
     font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 14px; font-weight: 700;
+    font-size: 13px; font-weight: 700;
     letter-spacing: 0.1em;
     color: var(--red);
-    flex-shrink: 0; width: 36px;
+    flex-shrink: 0; width: 32px;
     padding-top: 4px;
   }
-  .step-body h3 { font-size: 20px; margin: 0 0 8px; font-weight: 700; }
-  .step-body p { font-size: 14px; color: var(--muted); margin: 0; line-height: 1.7; max-width: 540px; }
+  .step-body h3 { font-size: 18px; margin: 0 0 8px; font-weight: 700; }
+  .step-body p { font-size: 14px; color: var(--muted); margin: 0; line-height: 1.7; max-width: 520px; }
 
   /* ===== Models (pick your blade) ===== */
   .models-section {
@@ -616,42 +630,42 @@
   </section>
 
   <div id="how-it-works" class="steps">
-    <div class="step reveal">
+    <div class="step">
       <div class="step-num">01</div>
       <div class="step-body">
         <h3>Finds the moments</h3>
         <p>Claude reads your full transcript — not just keywords — and scores every segment for hook strength, emotional payoff, and how well it stands alone. It picks the moments that actually make people stop scrolling.</p>
       </div>
     </div>
-    <div class="step reveal">
+    <div class="step">
       <div class="step-num">02</div>
       <div class="step-body">
         <h3>Cuts the silence</h3>
         <p>Dead air, "ums," and long pauses are detected automatically and trimmed out — frame-accurate — so every clip feels tight and high-energy without you touching a timeline.</p>
       </div>
     </div>
-    <div class="step reveal">
+    <div class="step">
       <div class="step-num">03</div>
       <div class="step-body">
         <h3>Goes vertical</h3>
         <p>Each clip is reframed to 9:16 with smart cropping that tracks faces and motion, so your subject stays centered — no black bars, no stretching.</p>
       </div>
     </div>
-    <div class="step reveal">
+    <div class="step">
       <div class="step-num">04</div>
       <div class="step-body">
         <h3>Burns in captions</h3>
         <p>Animated, word-by-word subtitles are burned directly into the video — styled to match the energy of short-form platforms and ready to post.</p>
       </div>
     </div>
-    <div class="step reveal">
+    <div class="step">
       <div class="step-num">05</div>
       <div class="step-body">
         <h3>Writes the copy</h3>
         <p>For every clip, Shinobi writes a title, description, tags, and a Reddit-ready framing — tuned to your tone, audience, and niche.</p>
       </div>
     </div>
-    <div class="step reveal">
+    <div class="step">
       <div class="step-num">06</div>
       <div class="step-body">
         <h3>Posts everywhere</h3>
@@ -850,6 +864,19 @@
             setTimeout(type, i < 13 ? 80 : 55);
           }
         })();
+      }
+
+      var stepsEl = document.getElementById('how-it-works');
+      if (stepsEl) {
+        var stepsObs = new IntersectionObserver(function (entries) {
+          if (entries[0].isIntersecting) {
+            stepsObs.disconnect();
+            stepsEl.querySelectorAll('.step').forEach(function (step, i) {
+              setTimeout(function () { step.classList.add('is-stacked'); }, i * 160);
+            });
+          }
+        }, { threshold: 0.05 });
+        stepsObs.observe(stepsEl);
       }
 
       var allReveal = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
