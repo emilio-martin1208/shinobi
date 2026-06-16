@@ -312,6 +312,92 @@
     margin: 0; line-height: 1.7;
   }
 
+  /* ===== Cut animation ===== */
+  .stat-placeholder { text-align: center; }
+  .stat-half, .stat-v2 {
+    position: absolute;
+    inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 36px 32px;
+  }
+  .stat-half-top { clip-path: inset(0 0 50% 0); }
+  .stat-half-bottom { clip-path: inset(50% 0 0 0); }
+  .stat-v2 { opacity: 0; }
+  .stat-bad {
+    background: none !important;
+    -webkit-text-fill-color: var(--red) !important;
+    color: var(--red) !important;
+  }
+  .stat-slash {
+    position: absolute;
+    top: 50%; left: -15%;
+    width: 130%; height: 1.5px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95) 20%, white 50%, rgba(255,255,255,0.95) 80%, transparent);
+    transform: rotate(-8deg) translateX(-115%);
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0;
+  }
+
+  /* Feature cut structure */
+  .katana-feature { position: relative; overflow: hidden; }
+  .feature-v1, .feature-v2 {
+    transition: opacity 0.4s ease, transform 0.4s ease, filter 0.4s ease;
+  }
+  .feature-v2 { display: none; }
+  .feature-bad { color: var(--red) !important; }
+  .feature-num-bad { color: var(--red) !important; }
+
+  /* Triggered cut state */
+  .katana-stat.is-cutting .stat-slash {
+    animation: slash-sweep 0.35s ease-out forwards;
+  }
+  .katana-stat.is-cutting .stat-half-top {
+    animation: half-top-exit 0.45s 0.2s ease forwards;
+  }
+  .katana-stat.is-cutting .stat-half-bottom {
+    animation: half-bottom-exit 0.45s 0.2s ease forwards;
+  }
+  .katana-stat.is-cutting .stat-v2 {
+    animation: v2-enter 0.5s 0.32s ease forwards;
+  }
+
+  .katana-feature.is-cutting .stat-slash {
+    animation: slash-sweep 0.35s ease-out forwards;
+  }
+  .katana-feature.is-cutting .feature-v1 {
+    animation: v1-fade-out 0.4s 0.2s ease forwards;
+  }
+  .katana-feature.is-cutting .feature-v2 {
+    display: block;
+    opacity: 0;
+    animation: v2-enter 0.5s 0.32s ease forwards;
+  }
+
+  @keyframes slash-sweep {
+    0%   { opacity: 0; transform: rotate(-8deg) translateX(-115%); }
+    15%  { opacity: 1; }
+    85%  { opacity: 1; }
+    100% { opacity: 0; transform: rotate(-8deg) translateX(115%); }
+  }
+  @keyframes half-top-exit {
+    0%   { clip-path: inset(0 0 50% 0); transform: translateY(0);    opacity: 1; }
+    100% { clip-path: inset(0 0 50% 0); transform: translateY(-44px); opacity: 0; }
+  }
+  @keyframes half-bottom-exit {
+    0%   { clip-path: inset(50% 0 0 0); transform: translateY(0);   opacity: 1; }
+    100% { clip-path: inset(50% 0 0 0); transform: translateY(44px); opacity: 0; }
+  }
+  @keyframes v1-fade-out {
+    0%   { opacity: 1; filter: blur(0);   transform: scale(1); }
+    100% { opacity: 0; filter: blur(3px); transform: scale(0.96); }
+  }
+  @keyframes v2-enter {
+    0%   { opacity: 0; filter: blur(4px); transform: scale(1.04); }
+    100% { opacity: 1; filter: blur(0);   transform: scale(1); }
+  }
+
   /* ===== How it works (steps) ===== */
   .steps {
     position: relative; z-index: 1;
@@ -564,40 +650,121 @@
       </div>
 
       <div class="katana-stats">
+
         <div class="katana-stat reveal" style="transition-delay:0s">
-          <div class="katana-stat-value">10×</div>
-          <div class="katana-stat-label">More context retained vs. fast models</div>
+          <div class="stat-placeholder" aria-hidden="true">
+            <div class="katana-stat-value" style="visibility:hidden">10×</div>
+            <div class="katana-stat-label" style="visibility:hidden">More context retained vs. fast models</div>
+          </div>
+          <div class="stat-half stat-half-top">
+            <div class="katana-stat-value stat-bad">1×</div>
+            <div class="katana-stat-label">More context retained vs. fast models</div>
+          </div>
+          <div class="stat-half stat-half-bottom">
+            <div class="katana-stat-value stat-bad">1×</div>
+            <div class="katana-stat-label">More context retained vs. fast models</div>
+          </div>
+          <div class="stat-v2">
+            <div class="katana-stat-value">10×</div>
+            <div class="katana-stat-label">More context retained vs. fast models</div>
+          </div>
+          <div class="stat-slash"></div>
         </div>
-        <div class="katana-stat reveal" style="transition-delay:0.12s">
-          <div class="katana-stat-value">9/10</div>
-          <div class="katana-stat-label">Average hook score on outputs</div>
+
+        <div class="katana-stat reveal" style="transition-delay:0.15s">
+          <div class="stat-placeholder" aria-hidden="true">
+            <div class="katana-stat-value" style="visibility:hidden">9/10</div>
+            <div class="katana-stat-label" style="visibility:hidden">Average hook score on outputs</div>
+          </div>
+          <div class="stat-half stat-half-top">
+            <div class="katana-stat-value stat-bad">3/10</div>
+            <div class="katana-stat-label">Average hook score on outputs</div>
+          </div>
+          <div class="stat-half stat-half-bottom">
+            <div class="katana-stat-value stat-bad">3/10</div>
+            <div class="katana-stat-label">Average hook score on outputs</div>
+          </div>
+          <div class="stat-v2">
+            <div class="katana-stat-value">9/10</div>
+            <div class="katana-stat-label">Average hook score on outputs</div>
+          </div>
+          <div class="stat-slash"></div>
         </div>
-        <div class="katana-stat reveal" style="transition-delay:0.24s">
-          <div class="katana-stat-value">45–60s</div>
-          <div class="katana-stat-label">Perfectly timed every clip, every time</div>
+
+        <div class="katana-stat reveal" style="transition-delay:0.3s">
+          <div class="stat-placeholder" aria-hidden="true">
+            <div class="katana-stat-value" style="visibility:hidden">45–60s</div>
+            <div class="katana-stat-label" style="visibility:hidden">Perfectly timed every clip, every time</div>
+          </div>
+          <div class="stat-half stat-half-top">
+            <div class="katana-stat-value stat-bad">Random</div>
+            <div class="katana-stat-label">Perfectly timed every clip, every time</div>
+          </div>
+          <div class="stat-half stat-half-bottom">
+            <div class="katana-stat-value stat-bad">Random</div>
+            <div class="katana-stat-label">Perfectly timed every clip, every time</div>
+          </div>
+          <div class="stat-v2">
+            <div class="katana-stat-value">45–60s</div>
+            <div class="katana-stat-label">Perfectly timed every clip, every time</div>
+          </div>
+          <div class="stat-slash"></div>
         </div>
+
       </div>
 
       <div class="katana-features">
         <div class="katana-feature reveal" style="transition-delay:0s">
-          <div class="katana-feature-num">01</div>
-          <h4>Nuanced moment detection</h4>
-          <p>Scores every segment for hook strength, emotional payoff, and standalone clarity — not just keywords or loudness.</p>
+          <div class="feature-v1">
+            <div class="katana-feature-num feature-num-bad">✕</div>
+            <h4 class="feature-bad">Keyword matching</h4>
+            <p class="feature-bad">Picks moments based on word frequency — misses everything subtle, emotional, or delayed-payoff.</p>
+          </div>
+          <div class="feature-v2">
+            <div class="katana-feature-num">01</div>
+            <h4>Nuanced moment detection</h4>
+            <p>Scores every segment for hook strength, emotional payoff, and standalone clarity — not just keywords or loudness.</p>
+          </div>
+          <div class="stat-slash"></div>
         </div>
         <div class="katana-feature reveal" style="transition-delay:0.1s">
-          <div class="katana-feature-num">02</div>
-          <h4>Full transcript reasoning</h4>
-          <p>Reads the entire video before picking a single clip. Context from minute one shapes what gets chosen at minute forty.</p>
+          <div class="feature-v1">
+            <div class="katana-feature-num feature-num-bad">✕</div>
+            <h4 class="feature-bad">First 60 seconds only</h4>
+            <p class="feature-bad">Skips the rest of the video — misses every buried punchline, callback, and late-game revelation.</p>
+          </div>
+          <div class="feature-v2">
+            <div class="katana-feature-num">02</div>
+            <h4>Full transcript reasoning</h4>
+            <p>Reads the entire video before picking a single clip. Context from minute one shapes what gets chosen at minute forty.</p>
+          </div>
+          <div class="stat-slash"></div>
         </div>
         <div class="katana-feature reveal" style="transition-delay:0.2s">
-          <div class="katana-feature-num">03</div>
-          <h4>Standalone by design</h4>
-          <p>Every clip is judged on whether it works without prior context — cold audience, first impression, no setup required.</p>
+          <div class="feature-v1">
+            <div class="katana-feature-num feature-num-bad">✕</div>
+            <h4 class="feature-bad">Context required</h4>
+            <p class="feature-bad">Clips assume the viewer already knows what's happening — alienating cold audiences on every platform.</p>
+          </div>
+          <div class="feature-v2">
+            <div class="katana-feature-num">03</div>
+            <h4>Standalone by design</h4>
+            <p>Every clip is judged on whether it works without prior context — cold audience, first impression, no setup required.</p>
+          </div>
+          <div class="stat-slash"></div>
         </div>
         <div class="katana-feature reveal" style="transition-delay:0.3s">
-          <div class="katana-feature-num">04</div>
-          <h4>Hook-first selection</h4>
-          <p>Prioritises moments that grab attention in the first five seconds — the only metric that actually stops the scroll.</p>
+          <div class="feature-v1">
+            <div class="katana-feature-num feature-num-bad">✕</div>
+            <h4 class="feature-bad">Random selection</h4>
+            <p class="feature-bad">No scoring — just grabs whatever's easiest to cut, with no regard for what stops a scroll.</p>
+          </div>
+          <div class="feature-v2">
+            <div class="katana-feature-num">04</div>
+            <h4>Hook-first selection</h4>
+            <p>Prioritises moments that grab attention in the first five seconds — the only metric that actually stops the scroll.</p>
+          </div>
+          <div class="stat-slash"></div>
         </div>
       </div>
 
@@ -672,8 +839,17 @@
           if (entry.isIntersecting) {
             entry.target.classList.add('is-visible');
             observer.unobserve(entry.target);
+
             if (entry.target.classList.contains('katana-intro-header')) {
               startKatanaTypewriter();
+            }
+
+            var isStat = entry.target.classList.contains('katana-stat');
+            var isFeat = entry.target.classList.contains('katana-feature');
+            if (isStat || isFeat) {
+              var stagger = parseFloat(entry.target.style.transitionDelay || 0) * 1000;
+              var el = entry.target;
+              setTimeout(function () { el.classList.add('is-cutting'); }, stagger + 1100);
             }
           }
         });
