@@ -656,7 +656,7 @@
   }
   #splash-wordmark {
     font-family: 'Molgan', Arial, sans-serif;
-    font-size: clamp(28px, 6vw, 52px);
+    font-size: clamp(42px, 9vw, 80px);
     font-weight: 700;
     letter-spacing: 0.06em;
     background: linear-gradient(135deg, #ffffff 0%, #e9e4ff 40%, #c4b5fd 75%, #8b5cf6 100%);
@@ -664,10 +664,10 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     opacity: 0;
-    animation: wordmark-in 0.8s ease 2.2s forwards;
+    animation: wordmark-in 0.8s ease 2.1s forwards;
   }
   @keyframes wordmark-in {
-    0%   { opacity: 0; transform: translateY(8px); }
+    0%   { opacity: 0; transform: translateY(10px); }
     100% { opacity: 1; transform: translateY(0); }
   }
 </style>
@@ -929,7 +929,7 @@
         setTimeout(function () {
           splash.classList.add('out');
           setTimeout(function () { splash.style.display = 'none'; }, 750);
-        }, 2500);
+        }, 4500);
       }
     })();
 
