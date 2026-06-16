@@ -214,6 +214,42 @@
   details[open] summary::before { transform: rotate(90deg); }
   details summary:hover { background: rgba(90,65,236,0.18); border-color: var(--purple); }
 
+  /* ===== Model picker ===== */
+  .model-picker-row {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(90,65,236,0.07);
+    border: 1px solid rgba(90,65,236,0.3);
+    border-left: 3px solid var(--purple-2);
+    padding: 10px 16px;
+  }
+  .model-picker-row label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--purple);
+    white-space: nowrap;
+    margin-bottom: 0;
+  }
+  .model-picker-row select {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    padding: 3px 2px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    width: auto;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .model-picker-row select:focus { border-bottom-color: var(--purple); }
+
   .steps { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
   .step { display: flex; align-items: center; gap: 12px; font-size: 14px; padding: 4px 0; }
   .step .icon {
@@ -312,9 +348,9 @@
         </div>
       </div>
 
-      <div style="margin-top:16px; display:flex; align-items:center; gap:10px;">
-        <label style="font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;">AI Model</label>
-        <select id="modelPicker" style="background:var(--panel-2);color:var(--text);border:1px solid rgba(255,255,255,0.15);border-radius:0;padding:6px 10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;flex:1;">
+      <div class="model-picker-row">
+        <label>AI Model</label>
+        <select id="modelPicker">
           <option value="katana-5.5">Katana 5.5</option>
           <option value="wakizashi-4.5">Wakizashi 4.5</option>
           <option value="kunai-4.5">Kunai 4.5</option>
