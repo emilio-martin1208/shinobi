@@ -51,7 +51,7 @@ async def find_moments(words, options=None):
     Returns: [{start_sec, end_sec, reason, hook_score}]
     """
     options = options or {}
-    num_clips = options.get("num_clips", 3)
+    num_clips = min(int(options.get("num_clips", 3)), 10)
     instructions = (options.get("instructions") or "").strip()
     transcript_with_ts = _build_transcript_with_timestamps(words)
     total_duration = words[-1]["end"] if words else 0

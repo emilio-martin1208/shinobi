@@ -101,6 +101,17 @@ A full day of UI polish and new profile features.
 
 ---
 
+## Day 5 — 2026-06-16: Flexible clip count (1–10)
+
+- **Up to 10 clips** — the clip count selector now runs from 1 to 10 (was
+  capped at 3); backend enforces a hard max of 10
+- **Landing page updated** — hero headline changed from "Three viral clips" to
+  "Up to 10 viral clips" to reflect the new range
+- **Trash moved to its own page** (`/trash.html`) — side-menu link, logged-in
+  only; profile page no longer shows trash content
+
+---
+
 ## Where things stand
 
 - Core pipeline, accounts, Copilot live-editing, and project history/trash are
