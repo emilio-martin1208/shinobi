@@ -308,16 +308,18 @@
             <label>YouTube URL</label>
             <input type="url" id="ytUrl" placeholder="https://www.youtube.com/watch?v=...">
           </div>
-          <div style="align-self:flex-end; display:flex; gap:8px;">
-            <select id="modelPicker" style="background:var(--panel-2);color:var(--text);border:1px solid rgba(255,255,255,0.15);border-radius:0;padding:0 10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;">
-              <option value="katana-5.5">Katana 5.5</option>
-              <option value="wakizashi-4.5">Wakizashi 4.5</option>
-              <option value="kunai-4.5">Kunai 4.5</option>
-              <option value="shuriken-3.5">Shuriken 3.5</option>
-            </select>
-            <button onclick="submitUrl()">Fetch</button>
-          </div>
+          <div style="align-self:flex-end;"><button onclick="submitUrl()">Fetch</button></div>
         </div>
+      </div>
+
+      <div style="margin-top:16px; display:flex; align-items:center; gap:10px;">
+        <label style="font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;">AI Model</label>
+        <select id="modelPicker" style="background:var(--panel-2);color:var(--text);border:1px solid rgba(255,255,255,0.15);border-radius:0;padding:6px 10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;flex:1;">
+          <option value="katana-5.5">Katana 5.5</option>
+          <option value="wakizashi-4.5">Wakizashi 4.5</option>
+          <option value="kunai-4.5">Kunai 4.5</option>
+          <option value="shuriken-3.5">Shuriken 3.5</option>
+        </select>
       </div>
 
       <details style="margin-top:20px;">
