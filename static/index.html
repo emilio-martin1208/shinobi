@@ -638,22 +638,47 @@
     opacity: 0;
     pointer-events: none;
   }
+  #splash-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
   #splash-logo {
     width: min(38vw, 200px);
     filter: drop-shadow(0 0 36px rgba(139,92,246,0.7));
     clip-path: polygon(0% 0%, 0% 0%, -25% 100%, -25% 100%);
-    animation: brush-reveal 1s cubic-bezier(0.22,1,0.36,1) 0.15s forwards;
+    animation: brush-reveal 1.9s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
   }
   @keyframes brush-reveal {
     0%   { clip-path: polygon(  0%   0%,   0%   0%,  -25% 100%,  -25% 100%); }
     100% { clip-path: polygon(  0%   0%,  125%   0%,  100% 100%,  -25% 100%); }
+  }
+  #splash-wordmark {
+    font-family: 'Molgan', Arial, sans-serif;
+    font-size: clamp(28px, 6vw, 52px);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    background: linear-gradient(135deg, #ffffff 0%, #e9e4ff 40%, #c4b5fd 75%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0;
+    animation: wordmark-in 0.8s ease 2.2s forwards;
+  }
+  @keyframes wordmark-in {
+    0%   { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
   }
 </style>
 </head>
 <body>
 
   <div id="splash">
-    <img id="splash-logo" src="/logo-final.png" alt="Shinobi">
+    <div id="splash-inner">
+      <img id="splash-logo" src="/logo-final.png" alt="Shinobi">
+      <div id="splash-wordmark">Shinobi.</div>
+    </div>
   </div>
 
   <nav>
