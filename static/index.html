@@ -174,6 +174,14 @@
   }
   .btn-ghost:hover { background: var(--panel-2); border-color: var(--purple); }
 
+  /* ===== Typed cursor ===== */
+  .typed-cursor {
+    display: inline-block;
+    margin-left: 2px;
+    animation: typed-blink 0.9s step-end infinite;
+  }
+  @keyframes typed-blink { 50% { opacity: 0; } }
+
   /* ===== Scroll reveal ===== */
   .reveal {
     opacity: 0;
@@ -181,6 +189,128 @@
     transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
   }
   .reveal.is-visible { opacity: 1; transform: translateY(0); }
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal-left.is-visible { opacity: 1; transform: translateX(0); }
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal-right.is-visible { opacity: 1; transform: translateX(0); }
+
+  /* ===== Katana 5.5 intro ===== */
+  .katana-intro {
+    position: relative;
+    z-index: 1;
+    padding: 96px 24px;
+    overflow: hidden;
+  }
+  .katana-intro::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 900px; height: 600px;
+    background: radial-gradient(ellipse at center, rgba(90,65,236,0.18) 0%, rgba(122,31,61,0.08) 50%, transparent 75%);
+    pointer-events: none;
+  }
+  .katana-intro-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .katana-intro-header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 64px;
+  }
+  .katana-intro-header .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--muted);
+    border: 1px solid rgba(52,211,153,0.4);
+    border-radius: 0px; padding: 4px 12px; margin-bottom: 24px;
+    background: rgba(52,211,153,0.06);
+  }
+  .katana-intro-header h2 {
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin: 0 0 20px;
+    background: linear-gradient(135deg, #f3f1f7 30%, #c4b5fd 70%, #ff6b6b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .katana-intro-header p.sub {
+    font-size: clamp(15px, 2vw, 18px);
+    color: var(--muted);
+    line-height: 1.7;
+    margin: 0;
+  }
+  .katana-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 64px;
+  }
+  @media (max-width: 640px) { .katana-stats { grid-template-columns: 1fr; } }
+  .katana-stat {
+    background: var(--bg);
+    padding: 36px 32px;
+    text-align: center;
+  }
+  .katana-stat-value {
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #8b5cf6, #ff4d5e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .katana-stat-label {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .katana-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  @media (max-width: 640px) { .katana-features { grid-template-columns: 1fr; } }
+  .katana-feature {
+    padding: 32px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-right: 1px solid rgba(255,255,255,0.06);
+    transition: background 0.3s;
+  }
+  .katana-feature:nth-child(even) { border-right: none; }
+  .katana-feature:nth-last-child(-n+2) { border-bottom: none; }
+  .katana-feature:hover { background: rgba(90,65,236,0.05); }
+  .katana-feature-num {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--purple-2);
+    margin-bottom: 12px;
+  }
+  .katana-feature h4 {
+    font-size: 17px; font-weight: 700;
+    margin: 0 0 10px; line-height: 1.3;
+  }
+  .katana-feature p {
+    font-size: 14px; color: var(--muted);
+    margin: 0; line-height: 1.7;
+  }
 
   /* ===== How it works (steps) ===== */
   .steps {
@@ -424,6 +554,56 @@
     </div>
   </div>
 
+  <div class="katana-intro">
+    <div class="katana-intro-inner">
+
+      <div class="katana-intro-header reveal">
+        <div class="eyebrow"><span class="pulse"></span> <span style="color:var(--green)">New</span></div>
+        <h2><span id="katanaTypedText"></span><span class="typed-cursor">|</span></h2>
+        <p class="sub">The sharpest mind in short-form. Katana 5.5 reads between the lines — catching the emotional undercurrent, the buried punchline, the setup that pays off 40 seconds later. This is what happens when you stop compromising on intelligence.</p>
+      </div>
+
+      <div class="katana-stats">
+        <div class="katana-stat reveal" style="transition-delay:0s">
+          <div class="katana-stat-value">10×</div>
+          <div class="katana-stat-label">More context retained vs. fast models</div>
+        </div>
+        <div class="katana-stat reveal" style="transition-delay:0.12s">
+          <div class="katana-stat-value">9/10</div>
+          <div class="katana-stat-label">Average hook score on outputs</div>
+        </div>
+        <div class="katana-stat reveal" style="transition-delay:0.24s">
+          <div class="katana-stat-value">45–60s</div>
+          <div class="katana-stat-label">Perfectly timed every clip, every time</div>
+        </div>
+      </div>
+
+      <div class="katana-features">
+        <div class="katana-feature reveal" style="transition-delay:0s">
+          <div class="katana-feature-num">01</div>
+          <h4>Nuanced moment detection</h4>
+          <p>Scores every segment for hook strength, emotional payoff, and standalone clarity — not just keywords or loudness.</p>
+        </div>
+        <div class="katana-feature reveal" style="transition-delay:0.1s">
+          <div class="katana-feature-num">02</div>
+          <h4>Full transcript reasoning</h4>
+          <p>Reads the entire video before picking a single clip. Context from minute one shapes what gets chosen at minute forty.</p>
+        </div>
+        <div class="katana-feature reveal" style="transition-delay:0.2s">
+          <div class="katana-feature-num">03</div>
+          <h4>Standalone by design</h4>
+          <p>Every clip is judged on whether it works without prior context — cold audience, first impression, no setup required.</p>
+        </div>
+        <div class="katana-feature reveal" style="transition-delay:0.3s">
+          <div class="katana-feature-num">04</div>
+          <h4>Hook-first selection</h4>
+          <p>Prioritises moments that grab attention in the first five seconds — the only metric that actually stops the scroll.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <div class="models-section">
     <div class="models-header">
       <div class="eyebrow"><span class="pulse"></span> Choose your edge</div>
@@ -434,6 +614,7 @@
       <div class="model-row reveal">
         <div class="model-row-name">
           <h3>Katana 5.5</h3>
+          <span class="model-card-badge">New</span>
         </div>
         <div class="model-row-tier">Most capable</div>
         <p class="model-row-desc">Sharpest editing — best for nuanced, high-stakes clip selection. Catches subtle hooks and pays off the long setup.</p>
@@ -466,24 +647,39 @@
 
   <script>
     (function () {
-      var items = document.querySelectorAll('.reveal');
-      var groups = {};
-      items.forEach(function (el) {
-        var parent = el.parentElement;
-        if (!groups[parent.className]) groups[parent.className] = [];
-        var arr = groups[parent.className];
-        var idx = Array.prototype.indexOf.call(parent.querySelectorAll('.reveal'), el);
-        el.style.transitionDelay = (idx * 0.12) + 's';
-      });
+      var katanaTyped = false;
+
+      function startKatanaTypewriter() {
+        if (katanaTyped) return;
+        katanaTyped = true;
+        var el = document.getElementById('katanaTypedText');
+        if (!el) return;
+        var text = 'Introducing Katana 5.5';
+        var i = 0;
+        (function type() {
+          if (i <= text.length) {
+            el.textContent = text.slice(0, i);
+            i++;
+            setTimeout(type, i < 13 ? 80 : 55);
+          }
+        })();
+      }
+
+      var allReveal = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+
       var observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
             entry.target.classList.add('is-visible');
             observer.unobserve(entry.target);
+            if (entry.target.classList.contains('katana-intro-header')) {
+              startKatanaTypewriter();
+            }
           }
         });
-      }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
-      items.forEach(function (el) { observer.observe(el); });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+      allReveal.forEach(function (el) { observer.observe(el); });
 
     })();
   </script>
