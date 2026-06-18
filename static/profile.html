@@ -90,6 +90,52 @@ button {
 #saveStatus { font-size: 12.5px; color: var(--green); opacity: 0; transition: opacity 0.3s; }
 #saveStatus.show { opacity: 1; }
 
+/* Brand image */
+#brandPanel { border-left: 3px solid var(--purple); }
+.brand-intro { font-size: 14px; color: var(--muted); line-height: 1.7; margin: 0 0 18px; }
+.brand-intro em { color: var(--text); font-style: italic; }
+.brand-field { margin-bottom: 18px; }
+.brand-field label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--purple); margin-bottom: 8px; }
+.brand-hint { font-size: 12.5px; color: var(--muted); margin: 0 0 10px; line-height: 1.6; }
+.brand-field textarea {
+  width: 100%; min-height: 64px; resize: vertical;
+  background: #0e0c14; border: 1px solid #ffffff; color: var(--text);
+  border-radius: 0px; padding: 10px 12px; font-family: inherit; font-size: 14px; outline: none;
+  transition: border-color 0.2s;
+}
+.brand-input {
+  width: 100%; background: #0e0c14; border: 1px solid #ffffff; color: var(--text);
+  border-radius: 0px; padding: 10px 12px; font-family: inherit; font-size: 14px; outline: none;
+  transition: border-color 0.2s;
+}
+.brand-field textarea:focus, .brand-input:focus { border-color: var(--purple); }
+.brand-connect-row { display: flex; align-items: center; gap: 10px; }
+.brand-connect-row .brand-input { flex: 1; }
+.brand-pin-logo { width: 24px; height: 24px; flex-shrink: 0; display: inline-flex; }
+.brand-pin-logo svg { width: 100%; height: 100%; }
+.brand-pin-status { font-size: 12.5px; color: var(--green); display: block; margin-top: 8px; min-height: 16px; }
+.brand-gallery { display: flex; flex-wrap: wrap; gap: 10px; }
+.brand-thumb { position: relative; width: 96px; height: 96px; border: 1px solid #ffffff; overflow: hidden; }
+.brand-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.brand-thumb-del {
+  position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; padding: 0;
+  background: rgba(13,13,20,0.8); border: 1px solid #ffffff; color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 14px; line-height: 1;
+  opacity: 0; transition: opacity 0.2s;
+}
+.brand-thumb:hover .brand-thumb-del { opacity: 1; }
+.brand-add-tile {
+  width: 96px; height: 96px; padding: 0; background: rgba(90,65,236,0.07);
+  border: 1.5px dashed var(--purple); color: var(--purple);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  transition: background 0.2s;
+}
+.brand-add-tile:hover { background: rgba(90,65,236,0.15); }
+.brand-add-tile span { font-size: 26px; line-height: 1; }
+.brand-add-tile small { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+#brandSaveStatus { font-size: 12.5px; color: var(--green); opacity: 0; transition: opacity 0.3s; }
+#brandSaveStatus.show { opacity: 1; }
+
 /* Platforms */
 .platforms { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
 .platform { display: flex; align-items: center; gap: 10px; font-size: 14px; }
@@ -210,6 +256,53 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding: 40px
         </div>
       </div>
 
+      <h2>Brand image</h2>
+      <div class="panel" id="brandPanel">
+        <p class="brand-intro">Shinobi's AI adapts to <em>you</em>. The more it learns about your aesthetic, the more every clip it cuts stays on-brand — your vibe, your voice, your look. Set it once and it caters to your brand on every project.</p>
+
+        <div class="brand-field">
+          <label for="brandAesthetic">Your aesthetic / vibe</label>
+          <textarea id="brandAesthetic" placeholder="e.g. minimal, high-energy, cozy lo-fi, bold and punchy, luxury streetwear..."></textarea>
+        </div>
+        <div class="brand-field">
+          <label for="brandTone">Voice &amp; tone</label>
+          <textarea id="brandTone" placeholder="e.g. witty and casual, authoritative, warm and encouraging, deadpan..."></textarea>
+        </div>
+        <div class="brand-field">
+          <label for="brandPalette">Visual palette</label>
+          <input type="text" id="brandPalette" class="brand-input" placeholder="e.g. warm earth tones, neon on black, pastel...">
+        </div>
+
+        <div class="brand-field">
+          <label>Connect Pinterest</label>
+          <div class="brand-connect-row">
+            <span class="brand-pin-logo" aria-hidden="true">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0a12 12 0 0 0-4.37 23.17c-.1-.94-.2-2.4.04-3.44.22-.93 1.4-5.96 1.4-5.96s-.36-.72-.36-1.78c0-1.66.97-2.9 2.17-2.9 1.02 0 1.51.77 1.51 1.69 0 1.03-.65 2.56-1 3.99-.28 1.19.6 2.16 1.77 2.16 2.12 0 3.75-2.24 3.75-5.47 0-2.86-2.05-4.86-4.99-4.86-3.4 0-5.4 2.55-5.4 5.19 0 1.03.4 2.13.89 2.73.1.12.11.22.08.34l-.33 1.37c-.05.22-.18.27-.4.16-1.5-.7-2.44-2.89-2.44-4.65 0-3.78 2.75-7.26 7.92-7.26 4.16 0 7.39 2.96 7.39 6.92 0 4.13-2.6 7.45-6.22 7.45-1.21 0-2.35-.63-2.74-1.38l-.75 2.84c-.27 1.04-1 2.35-1.49 3.15A12 12 0 1 0 12 0z" fill="#E60023"/></svg>
+            </span>
+            <input type="url" id="brandPinterest" class="brand-input" placeholder="Paste your Pinterest profile or board URL">
+            <button class="secondary" onclick="saveBrand(true)">Connect</button>
+          </div>
+          <span class="brand-pin-status" id="brandPinStatus"></span>
+        </div>
+
+        <div class="brand-field">
+          <label>Reference photos</label>
+          <p class="brand-hint">Upload images that capture your aesthetic — moodboards, past posts, anything that says "this is my brand."</p>
+          <input type="file" id="brandImageInput" accept="image/*" multiple style="display:none;" onchange="uploadBrandImages()">
+          <div class="brand-gallery" id="brandGallery">
+            <button class="brand-add-tile" onclick="document.getElementById('brandImageInput').click()">
+              <span>+</span>
+              <small>Add photos</small>
+            </button>
+          </div>
+        </div>
+
+        <div class="save-row">
+          <button class="btn-primary" onclick="saveBrand()">Save brand image</button>
+          <span id="brandSaveStatus">Saved</span>
+        </div>
+      </div>
+
       <h2>Past projects</h2>
       <div class="projects-grid" id="projectsGrid">
         <div class="empty-state">No projects yet — repurpose a video to see it here.</div>
@@ -261,6 +354,8 @@ async function loadProfile() {
     document.getElementById('bio').value = json.data.bio || '';
     document.getElementById('username').value = json.data.username || '';
     if (json.data.avatar_url) document.getElementById('avatarPreview').src = json.data.avatar_url;
+
+    loadBrand();
 
     const grid = document.getElementById('projectsGrid');
     const projects = json.data.projects || [];
@@ -345,6 +440,77 @@ async function uploadAvatar() {
     document.getElementById('avatarPreview').src = json.data.avatar_url + '?t=' + Date.now();
     if (window.shinobiRefreshAuthUI) window.shinobiRefreshAuthUI();
   }
+}
+
+// ---- Brand image ----
+async function loadBrand() {
+  try {
+    const res = await fetch('/api/brand');
+    const json = await res.json();
+    if (!json.success) return;
+    const d = json.data;
+    document.getElementById('brandAesthetic').value = d.aesthetic || '';
+    document.getElementById('brandTone').value = d.tone || '';
+    document.getElementById('brandPalette').value = d.palette || '';
+    document.getElementById('brandPinterest').value = d.pinterest_url || '';
+    if (d.pinterest_url) {
+      document.getElementById('brandPinStatus').textContent = 'Pinterest connected.';
+    }
+    renderBrandGallery(d.images || []);
+  } catch (e) { /* not logged in or offline */ }
+}
+
+function renderBrandGallery(images) {
+  const gallery = document.getElementById('brandGallery');
+  const addTile = '<button class="brand-add-tile" onclick="document.getElementById(\'brandImageInput\').click()"><span>+</span><small>Add photos</small></button>';
+  gallery.innerHTML = images.map(img => `
+    <div class="brand-thumb">
+      <img src="${img.image_url}" alt="">
+      <button class="brand-thumb-del" title="Remove" onclick="deleteBrandImage(${img.id})">&times;</button>
+    </div>
+  `).join('') + addTile;
+}
+
+async function saveBrand(isConnect) {
+  const payload = {
+    aesthetic: document.getElementById('brandAesthetic').value,
+    tone: document.getElementById('brandTone').value,
+    palette: document.getElementById('brandPalette').value,
+    pinterest_url: document.getElementById('brandPinterest').value.trim(),
+  };
+  const res = await fetch('/api/brand', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const json = await res.json();
+  if (!json.success) return;
+  if (isConnect) {
+    const pin = document.getElementById('brandPinStatus');
+    pin.textContent = payload.pinterest_url ? 'Pinterest connected.' : 'Pinterest link cleared.';
+  } else {
+    const status = document.getElementById('brandSaveStatus');
+    status.classList.add('show');
+    setTimeout(() => status.classList.remove('show'), 1800);
+  }
+}
+
+async function uploadBrandImages() {
+  const input = document.getElementById('brandImageInput');
+  if (!input.files || !input.files.length) return;
+  for (const file of input.files) {
+    const fd = new FormData();
+    fd.append('file', file);
+    await fetch('/api/brand/image', { method: 'POST', body: fd });
+  }
+  input.value = '';
+  loadBrand();
+}
+
+async function deleteBrandImage(id) {
+  const res = await fetch('/api/brand/image/' + id, { method: 'DELETE' });
+  const json = await res.json();
+  if (json.success) loadBrand();
 }
 
 async function refreshAuthStatus() {

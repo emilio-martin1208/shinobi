@@ -28,6 +28,7 @@ OUTPUT_DIR = "output"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs("static/avatars", exist_ok=True)
+os.makedirs("static/brand", exist_ok=True)
 
 app = FastAPI()
 
@@ -244,9 +245,12 @@ async def upload(request: Request, file: UploadFile = File(...), options: str = 
     except json.JSONDecodeError:
         parsed_options = {}
 
+    user_id = _current_user_id(request)
+    parsed_options = _apply_brand_context(user_id, parsed_options)
+
     dest_path = os.path.join(UPLOAD_DIR, f"{job_id}{ext}")
     jobs.new_job(job_id, dest_path, parsed_options)
-    jobs.get_job(job_id)["user_id"] = _current_user_id(request)
+    jobs.get_job(job_id)["user_id"] = user_id
     jobs.set_step(job_id, "uploading", "active")
 
     try:
@@ -269,11 +273,14 @@ async def from_url(request: Request):
         return err("Missing 'url'")
     options = body.get("options", {})
 
+    user_id = _current_user_id(request)
+    options = _apply_brand_context(user_id, options)
+
     job_id = str(uuid.uuid4())
     dest_template = os.path.join(UPLOAD_DIR, f"{job_id}.%(ext)s")
 
     jobs.new_job(job_id, "", options)
-    jobs.get_job(job_id)["user_id"] = _current_user_id(request)
+    jobs.get_job(job_id)["user_id"] = user_id
     jobs.set_step(job_id, "uploading", "active")
     jobs.log(job_id, f"Downloading {url}")
 
@@ -393,6 +400,19 @@ def _current_user_id(request: Request):
     return user["id"] if user else None
 
 
+def _apply_brand_context(user_id, options):
+    """Prepend the logged-in creator's brand-image profile to the job's
+    instructions so Shinobi caters clip selection and copy to their brand."""
+    if not user_id:
+        return options
+    options = dict(options or {})
+    brand = users.build_brand_instructions(user_id)
+    if brand:
+        existing = (options.get("instructions") or "").strip()
+        options["instructions"] = (brand + ("\n\n" + existing if existing else "")).strip()
+    return options
+
+
 @app.post("/api/signup")
 async def signup(request: Request):
     body = await request.json()
@@ -502,6 +522,67 @@ async def upload_avatar(request: Request, file: UploadFile = File(...)):
     avatar_url = f"/avatars/{filename}"
     users.set_avatar(user["id"], avatar_url)
     return ok({"avatar_url": avatar_url})
+
+
+# ---------------------------------------------------------------------------
+# Brand image routes (adaptive brand profile)
+# ---------------------------------------------------------------------------
+
+@app.get("/api/brand")
+async def get_brand(request: Request):
+    user = _current_user(request)
+    if user is None:
+        return err("Not logged in", status=401)
+    return ok(users.get_brand_profile(user["id"]))
+
+
+@app.post("/api/brand")
+async def update_brand(request: Request):
+    user = _current_user(request)
+    if user is None:
+        return err("Not logged in", status=401)
+    body = await request.json()
+    users.set_brand_profile(
+        user["id"],
+        aesthetic=body.get("aesthetic"),
+        palette=body.get("palette"),
+        tone=body.get("tone"),
+        pinterest_url=body.get("pinterest_url"),
+    )
+    return ok(users.get_brand_profile(user["id"]))
+
+
+@app.post("/api/brand/image")
+async def upload_brand_image(request: Request, file: UploadFile = File(...)):
+    user = _current_user(request)
+    if user is None:
+        return err("Not logged in", status=401)
+    ext = os.path.splitext(file.filename or "")[1].lower()
+    if ext not in (".png", ".jpg", ".jpeg", ".gif", ".webp"):
+        return err("Unsupported image type")
+    filename = f"brand_{user['id']}_{uuid.uuid4().hex[:8]}{ext}"
+    dest_path = os.path.join("static/brand", filename)
+    with open(dest_path, "wb") as f:
+        f.write(await file.read())
+    image_url = f"/brand/{filename}"
+    image_id = users.add_brand_image(user["id"], image_url)
+    return ok({"id": image_id, "image_url": image_url})
+
+
+@app.delete("/api/brand/image/{image_id}")
+async def delete_brand_image(image_id: int, request: Request):
+    user = _current_user(request)
+    if user is None:
+        return err("Not logged in", status=401)
+    removed_url = users.delete_brand_image(user["id"], image_id)
+    if removed_url:
+        path = os.path.join("static", removed_url.lstrip("/"))
+        if os.path.exists(path):
+            try:
+                os.remove(path)
+            except OSError:
+                pass
+    return ok({"deleted": bool(removed_url)})
 
 
 @app.get("/api/project/{job_id}")

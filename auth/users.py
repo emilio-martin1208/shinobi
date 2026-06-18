@@ -60,6 +60,24 @@ def _connect():
     project_cols = [r[1] for r in conn.execute("PRAGMA table_info(projects)").fetchall()]
     if "trashed" not in project_cols:
         conn.execute("ALTER TABLE projects ADD COLUMN trashed INTEGER NOT NULL DEFAULT 0")
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS brand_profiles (
+            user_id INTEGER PRIMARY KEY,
+            aesthetic TEXT NOT NULL DEFAULT '',
+            palette TEXT NOT NULL DEFAULT '',
+            tone TEXT NOT NULL DEFAULT '',
+            pinterest_url TEXT NOT NULL DEFAULT '',
+            updated_at INTEGER NOT NULL DEFAULT 0
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS brand_images (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            image_url TEXT NOT NULL,
+            created_at INTEGER NOT NULL
+        )
+    """)
     return conn
 
 
@@ -296,3 +314,92 @@ def delete_project(user_id, job_id):
     changed = cur.rowcount > 0
     conn.close()
     return changed
+
+
+# ---------------------------------------------------------------------------
+# Brand image — the adaptive profile Shinobi uses to cater clips to a creator
+# ---------------------------------------------------------------------------
+
+def get_brand_profile(user_id):
+    conn = _connect()
+    row = conn.execute(
+        "SELECT aesthetic, palette, tone, pinterest_url, updated_at FROM brand_profiles WHERE user_id = ?",
+        (user_id,),
+    ).fetchone()
+    images = conn.execute(
+        "SELECT id, image_url FROM brand_images WHERE user_id = ? ORDER BY created_at DESC",
+        (user_id,),
+    ).fetchall()
+    conn.close()
+    profile = {"aesthetic": "", "palette": "", "tone": "", "pinterest_url": "", "updated_at": 0}
+    if row:
+        profile = {"aesthetic": row[0], "palette": row[1], "tone": row[2],
+                   "pinterest_url": row[3], "updated_at": row[4]}
+    profile["images"] = [{"id": r[0], "image_url": r[1]} for r in images]
+    return profile
+
+
+def set_brand_profile(user_id, aesthetic=None, palette=None, tone=None, pinterest_url=None):
+    current = get_brand_profile(user_id)
+    aesthetic = current["aesthetic"] if aesthetic is None else aesthetic
+    palette = current["palette"] if palette is None else palette
+    tone = current["tone"] if tone is None else tone
+    pinterest_url = current["pinterest_url"] if pinterest_url is None else pinterest_url
+    conn = _connect()
+    conn.execute(
+        "INSERT INTO brand_profiles (user_id, aesthetic, palette, tone, pinterest_url, updated_at) "
+        "VALUES (?, ?, ?, ?, ?, ?) "
+        "ON CONFLICT(user_id) DO UPDATE SET aesthetic = excluded.aesthetic, "
+        "palette = excluded.palette, tone = excluded.tone, "
+        "pinterest_url = excluded.pinterest_url, updated_at = excluded.updated_at",
+        (user_id, aesthetic, palette, tone, pinterest_url, int(time.time())),
+    )
+    conn.commit()
+    conn.close()
+
+
+def add_brand_image(user_id, image_url):
+    conn = _connect()
+    cur = conn.execute(
+        "INSERT INTO brand_images (user_id, image_url, created_at) VALUES (?, ?, ?)",
+        (user_id, image_url, int(time.time())),
+    )
+    conn.commit()
+    image_id = cur.lastrowid
+    conn.close()
+    return image_id
+
+
+def delete_brand_image(user_id, image_id):
+    conn = _connect()
+    row = conn.execute(
+        "SELECT image_url FROM brand_images WHERE id = ? AND user_id = ?",
+        (image_id, user_id),
+    ).fetchone()
+    cur = conn.execute(
+        "DELETE FROM brand_images WHERE id = ? AND user_id = ?",
+        (image_id, user_id),
+    )
+    conn.commit()
+    conn.close()
+    return row[0] if (row and cur.rowcount > 0) else None
+
+
+def build_brand_instructions(user_id):
+    """Turn a creator's brand profile into a prompt snippet so moment
+    selection and copy generation cater to their established aesthetic."""
+    p = get_brand_profile(user_id)
+    parts = []
+    if p["aesthetic"].strip():
+        parts.append(f"Aesthetic / vibe: {p['aesthetic'].strip()}")
+    if p["tone"].strip():
+        parts.append(f"Voice & tone: {p['tone'].strip()}")
+    if p["palette"].strip():
+        parts.append(f"Visual palette: {p['palette'].strip()}")
+    if not parts:
+        return ""
+    return (
+        "This creator has an established brand image. Choose moments and write copy that "
+        "stay on-brand with the following, while keeping each clip strong on its own:\n"
+        + "\n".join(f"- {x}" for x in parts)
+    )
