@@ -3,14 +3,14 @@ import os
 
 from anthropic import AsyncAnthropic
 
-MODEL = "claude-sonnet-4-5-20250929"
+MODEL = "claude-sonnet-4-6"
 
 # Map Shinobi's branded model picker names to real Claude models.
 MODEL_MAP = {
-    "katana-5.5": "claude-sonnet-4-5-20250929",
-    "wakizashi-4.5": "claude-sonnet-4-5-20250929",
-    "kunai-4.5": "claude-3-5-haiku-20241022",
-    "shuriken-3.5": "claude-3-5-haiku-20241022",
+    "katana-5.5": "claude-sonnet-4-6",
+    "wakizashi-4.5": "claude-sonnet-4-6",
+    "kunai-4.5": "claude-haiku-4-5",
+    "shuriken-3.5": "claude-haiku-4-5",
 }
 
 
