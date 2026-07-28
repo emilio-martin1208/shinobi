@@ -71,6 +71,7 @@ def _detect_face_x_offset(input_path, width, height):
 
 
 async def reformat_to_vertical(input_path, output_path, log_path):
+    """Convert a clip to 9:16, face-aware cropping when possible, blur fallback otherwise."""
     width, height = await _probe_dimensions(input_path)
 
     if width == TARGET_W and height == TARGET_H:
