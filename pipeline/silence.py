@@ -1,3 +1,5 @@
+"""Detect and remove silent gaps from a clip using ffmpeg silencedetect."""
+
 import asyncio
 import os
 import re
