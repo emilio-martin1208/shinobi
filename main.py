@@ -54,11 +54,11 @@ async def security_headers(request: Request, call_next):
     return response
 
 
-def ok(data):
+def ok(data) -> JSONResponse:
     return JSONResponse({"success": True, "data": data, "error": None})
 
 
-def err(message, status=400):
+def err(message, status: int = 400) -> JSONResponse:
     return JSONResponse({"success": False, "data": None, "error": message}, status_code=status)
 
 
