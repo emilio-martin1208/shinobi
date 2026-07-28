@@ -1,3 +1,5 @@
+"""Reformat a clip to 1080x1920 (9:16) vertical for short-form platforms."""
+
 import asyncio
 import json
 
