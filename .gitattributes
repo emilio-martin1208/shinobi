@@ -1,0 +1,16 @@
+# Normalize line endings to LF on checkin
+* text=auto eol=lf
+
+# Shell scripts must stay LF
+*.sh text eol=lf
+
+# Treat binary assets as binary (no diff/merge/eol munging)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.mp4 binary
+*.otf binary
+*.ttf binary
+*.ico binary
