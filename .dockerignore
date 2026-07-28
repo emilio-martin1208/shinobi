@@ -6,6 +6,17 @@ uploads/
 output/
 server.log
 .git/
+.gitignore
 .env
 users.db
 tokens.db
+
+# Not needed in the app image
+waitlist/
+*.md
+!README.md
+.editorconfig
+.dockerignore
+static/avatars/*
+static/brand/*
+.DS_Store
