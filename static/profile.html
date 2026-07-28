@@ -371,7 +371,7 @@ async function loadProfile() {
           <button class="project-delete-btn" title="Move to trash" aria-label="Move project to trash" onclick="trashProject(event, '${p.job_id}')">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 7h14l-1.2 13.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9L5 7Z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M3 7h18M9 7V4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5V7M10 11v6M14 11v6" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
-          <video src="${p.thumbnail_url}" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>
+          <video src="${p.thumbnail_url}" muted loop playsinline preload="metadata" onmouseover="this.play()" onmouseout="this.pause()"></video>
           <div class="project-title">${escapeHtml(p.title || 'Untitled project')}</div>
           <div class="project-meta">${p.clip_count} clip${p.clip_count === 1 ? '' : 's'} &middot; ${new Date(p.created_at * 1000).toLocaleDateString()}</div>
         </div>
