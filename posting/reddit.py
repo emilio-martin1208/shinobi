@@ -7,6 +7,7 @@ from auth import db
 
 
 async def post_to_reddit(video_path, title, body, subreddit):
+    """Submit a video post to a subreddit. Returns {success, ...}."""
     if not db.is_connected("reddit"):
         return {"success": False, "error": "Reddit account not connected"}
 
