@@ -20,6 +20,7 @@ def _connect():
 
 
 def save_token(platform, access_token, refresh_token=None, expires_at=None):
+    """Upsert OAuth tokens for a platform (keeps existing refresh token if omitted)."""
     conn = _connect()
     conn.execute(
         "INSERT INTO tokens (platform, access_token, refresh_token, expires_at) "
@@ -35,6 +36,7 @@ def save_token(platform, access_token, refresh_token=None, expires_at=None):
 
 
 def get_token(platform):
+    """Return {access_token, refresh_token, expires_at} for a platform, or None."""
     conn = _connect()
     row = conn.execute(
         "SELECT access_token, refresh_token, expires_at FROM tokens WHERE platform = ?",
@@ -47,11 +49,13 @@ def get_token(platform):
 
 
 def is_connected(platform):
+    """True if we hold an access token for the platform."""
     token = get_token(platform)
     return token is not None and token["access_token"] is not None
 
 
 def is_expired(platform):
+    """True if the platform's token has a known expiry that has passed."""
     token = get_token(platform)
     if token is None or token["expires_at"] is None:
         return False
