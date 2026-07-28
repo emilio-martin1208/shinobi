@@ -121,6 +121,9 @@ All responses follow the envelope `{ success, data, error }`.
 | `GET /result/{job_id}` | Fetch finished clips and metadata |
 | `POST /post/{job_id}` | Publish clips to connected platforms |
 | `GET /auth/status` | Connection status for YouTube / Twitter / Reddit |
+| `GET /api/profile` | Current user's profile, projects, and settings |
+| `GET /api/brand` | Current user's adaptive brand-image profile |
+| `GET /health` | Liveness probe for uptime monitoring |
 
 <details>
 <summary><strong>Pipeline options</strong> (passed to <code>/upload</code> or <code>/url</code>)</summary>
@@ -131,7 +134,9 @@ All responses follow the envelope `{ success, data, error }`.
   "audience": "target audience description",
   "niche": "content niche",
   "cta": "call to action text",
-  "num_clips": 3,
+  "num_clips": 5,
+  "model": "katana-5.5 | wakizashi-4.5 | kunai-4.5 | shuriken-3.5",
+  "instructions": "free-text steering (brand image is auto-merged in)",
   "platforms": ["youtube", "twitter", "reddit"],
   "subreddit": "test"
 }
@@ -143,8 +148,11 @@ All responses follow the envelope `{ success, data, error }`.
 
 - [x] Core pipeline: transcribe → detect moments → clip → reformat → subtitle → metadata
 - [x] Web app with live progress and downloadable results
+- [x] Accounts, profiles, and persistent project history
+- [x] Selectable model tiers and adaptive brand image
 - [ ] Direct publishing to YouTube, X/Twitter, and Reddit (OAuth wired, not yet live)
 - [ ] Persistent job storage (currently in-memory)
+- [ ] Pinterest OAuth for automatic brand-board import
 - [ ] Larger Whisper models for higher transcription accuracy
 
 ## License
