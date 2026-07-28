@@ -7,6 +7,7 @@ from auth import db
 
 
 async def post_to_twitter(video_path, text):
+    """Post a video tweet to X/Twitter. Returns {success, ...}."""
     if not db.is_connected("twitter"):
         return {"success": False, "error": "Twitter account not connected"}
 
