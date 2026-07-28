@@ -9,6 +9,7 @@ _model = None
 
 
 def _get_model():
+    """Lazily load and cache the Whisper model (loaded once per process)."""
     global _model
     if _model is None:
         _model = whisper.load_model("base")
@@ -39,6 +40,7 @@ def _synthesize_words(segments):
 
 
 def _run_transcribe(video_path):
+    """Blocking Whisper transcription; returns a word-level transcript dict."""
     model = _get_model()
 
     try:
