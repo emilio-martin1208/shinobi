@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /$
+Allow: /readme.html
+Disallow: /app.html
+Disallow: /profile.html
+Disallow: /trash.html
+Disallow: /api/
+Disallow: /auth/
+Disallow: /output/
+Disallow: /avatars/
+Disallow: /brand/
