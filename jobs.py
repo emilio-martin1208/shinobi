@@ -1,3 +1,6 @@
+"""In-memory job store: tracks each repurpose job's pipeline steps,
+status, logs, and result while it runs."""
+
 import time
 
 STEPS = [
