@@ -79,6 +79,7 @@ def generate_ass(clip_words, ass_path):
 
 
 async def burn_subtitles(input_path, ass_path, output_path, log_path):
+    """Burn an ASS subtitle file into the video via ffmpeg."""
     args = [
         "ffmpeg", "-y",
         "-i", input_path,
@@ -102,6 +103,7 @@ async def burn_subtitles(input_path, ass_path, output_path, log_path):
 
 
 async def add_subtitles(input_path, output_path, clip_words, work_dir, log_path):
+    """Generate the ASS file for a clip's words and burn it into the video."""
     ass_path = os.path.join(work_dir, os.path.basename(output_path) + ".ass")
     generate_ass(clip_words, ass_path)
     return await burn_subtitles(input_path, ass_path, output_path, log_path)
