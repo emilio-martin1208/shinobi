@@ -20,6 +20,7 @@ JOBS = {}
 
 
 def new_job(job_id, video_path, options):
+    """Register a new job and initialize its step/status tracking."""
     JOBS[job_id] = {
         "id": job_id,
         "video_path": video_path,
@@ -37,10 +38,12 @@ def new_job(job_id, video_path, options):
 
 
 def get_job(job_id):
+    """Return the job dict for job_id, or None if unknown."""
     return JOBS.get(job_id)
 
 
 def log(job_id, message):
+    """Append a timestamped line to the job's log."""
     job = JOBS.get(job_id)
     if job is None:
         return
@@ -61,6 +64,7 @@ def set_step(job_id, step, state):
 
 
 def set_error(job_id, message):
+    """Mark the job failed and record the error message in status + log."""
     job = JOBS.get(job_id)
     if job is None:
         return
@@ -70,6 +74,7 @@ def set_error(job_id, message):
 
 
 def set_result(job_id, result):
+    """Attach the finished pipeline result and mark the job done."""
     job = JOBS.get(job_id)
     if job is None:
         return
