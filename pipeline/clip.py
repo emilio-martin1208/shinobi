@@ -20,6 +20,7 @@ async def _run_ffmpeg(args, log_path):
 
 
 async def extract_clip(input_path, start_sec, end_sec, output_path, log_path):
+    """Cut a single [start_sec, end_sec] segment from the source into output_path."""
     args = [
         "ffmpeg", "-y",
         "-ss", str(start_sec),
