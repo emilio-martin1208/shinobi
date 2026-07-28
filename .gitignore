@@ -17,5 +17,14 @@ static/avatars/*
 
 # OS
 .DS_Store
+
+# Local runtime data
 users.db
+
+# Local-only docs (not part of the codebase)
 CMO_README.md
+COMPANY_README.md
+
+# Generated brand reference uploads
+static/brand/*
+!static/brand/.gitkeep
