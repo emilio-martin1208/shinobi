@@ -124,10 +124,40 @@ A full day of UI polish and new profile features.
 
 ---
 
+## Day 7 — 2026-07-28: Brand image, landing polish, waitlist, cleanup
+
+**Adaptive brand image**
+- New **Brand Image** section on the profile — creators set their aesthetic,
+  voice/tone, visual palette, a Pinterest link, and a reference-photo gallery
+- Shinobi now **caters every clip to the creator's brand**: the saved profile
+  is auto-prepended to each job's instructions, steering moment selection and
+  copy to stay on-voice
+
+**Landing page & branding polish**
+- Model dropdown made always-visible on both upload and URL tabs, restyled to
+  match the design language
+- Added an **"Introducing Katana 5.5"** section with a typewriter headline and
+  a scroll-triggered sword-cut stat/feature animation
+- Dark-purple gradient applied to all headings; brush-stroke logo splash on load
+- "How it works" reworked into a scroll-driven one-at-a-time reveal
+- Added SEO + Open Graph / Twitter-card meta and favicons across pages
+
+**Waitlist (demand validation)**
+- Self-contained static `waitlist/` page (email + plan intent) to confirm
+  demand before paying for hosting — deploys free, never touches the pipeline
+
+**Fixes & cleanup**
+- Fixed a 404 from retired Claude model IDs (Haiku → `claude-haiku-4-5`,
+  Sonnet → `claude-sonnet-4-6`); verified all tiers live
+- Removed dead Copilot assets and unused logo variants
+- Added missing `certifi` dependency; tidied requirements and `.gitignore`
+
+---
+
 ## Where things stand
 
-- Core pipeline, accounts, Copilot live-editing, and project history/trash are
-  all working locally
+- Core pipeline, accounts, brand image, and project history/trash are all
+  working locally
 - Branding is consistent across the app (purple/red gradient theme matching
   the logo)
 - Deployment is ready to go (Docker + Railway config) but paused until we
