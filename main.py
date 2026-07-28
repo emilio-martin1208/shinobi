@@ -15,7 +15,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-
 import jobs
 from auth import oauth, users
 from pipeline import clip, metadata, moments, reformat, silence, subtitles, transcribe
