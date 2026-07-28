@@ -15,6 +15,7 @@ MODEL_MAP = {
 
 
 def _resolve_model(options):
+    """Map the branded tier name in options to a real Claude model ID."""
     return MODEL_MAP.get((options or {}).get("model"), MODEL)
 
 _client = None
