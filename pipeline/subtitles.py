@@ -1,3 +1,5 @@
+"""Build word-by-word animated ASS subtitles and burn them into a clip."""
+
 import asyncio
 import os
 
