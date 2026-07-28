@@ -1,3 +1,5 @@
+"""Transcribe audio to a word-level transcript using a local Whisper model."""
+
 import asyncio
 import functools
 
