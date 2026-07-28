@@ -1,0 +1,13 @@
+# Netlify config for the standalone Shinobi waitlist page.
+# Deploy: drag this folder onto https://app.netlify.com/drop,
+# or run `netlify deploy` from inside waitlist/.
+
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
