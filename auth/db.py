@@ -1,3 +1,5 @@
+"""SQLite storage for per-user OAuth tokens of connected posting platforms."""
+
 import sqlite3
 import time
 
