@@ -52,6 +52,12 @@ def err(message, status=400):
     return JSONResponse({"success": False, "data": None, "error": message}, status_code=status)
 
 
+@app.get("/health")
+async def health():
+    """Lightweight liveness probe for uptime monitoring and deploys."""
+    return {"status": "ok"}
+
+
 # ---------------------------------------------------------------------------
 # Pipeline orchestration
 # ---------------------------------------------------------------------------
