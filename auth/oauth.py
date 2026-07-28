@@ -11,6 +11,7 @@ from . import db
 
 
 def _popup_close_html(message):
+    """Return HTML that closes the OAuth popup and notifies the opener."""
     return HTMLResponse(f"""
     <html><body>
     <p>{message}</p>
@@ -63,6 +64,7 @@ async def reddit_auth_callback(code):
 
 
 def auth_status():
+    """Return connection state for each posting platform."""
     return {
         "youtube": db.is_connected("youtube"),
         "twitter": db.is_connected("twitter"),
