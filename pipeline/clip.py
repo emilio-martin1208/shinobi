@@ -1,3 +1,5 @@
+"""Extract a clip from the source video for a chosen moment via ffmpeg."""
+
 import asyncio
 import os
 
