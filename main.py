@@ -1,3 +1,7 @@
+"""Shinobi FastAPI app: serves the web UI and orchestrates the video
+repurposing pipeline as background jobs, plus accounts, profiles, brand
+image, projects, and posting integrations."""
+
 import asyncio
 import json
 import os
