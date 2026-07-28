@@ -7,6 +7,7 @@ from auth import db
 
 
 async def post_to_youtube(video_path, title, description, tags):
+    """Upload a video as a YouTube Short. Returns {success, ...}."""
     if not db.is_connected("youtube"):
         return {"success": False, "error": "YouTube account not connected"}
 
