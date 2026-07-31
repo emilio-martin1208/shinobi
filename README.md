@@ -155,6 +155,13 @@ All responses follow the envelope `{ success, data, error }`.
 - [ ] Pinterest OAuth for automatic brand-board import
 - [ ] Larger Whisper models for higher transcription accuracy
 
+## Related projects
+
+Also from Shinobi Tools: [**Forge**](https://github.com/emilio-martin1208/forge) —
+the AI software architect. Connect a GitHub repo and Forge builds a
+deterministic understanding of it, then generates documentation and
+grounded context packages from what's actually there.
+
 ## License
 
 Proprietary — all rights reserved.
