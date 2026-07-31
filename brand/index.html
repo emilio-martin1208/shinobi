@@ -4,249 +4,530 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Shinobi Tools — Forge & Shinobi</title>
-<link rel="icon" href="../static/logo-final.png">
-<link rel="apple-touch-icon" href="../static/logo-final.png">
-<meta name="theme-color" content="#0d0d14">
-<meta name="description" content="Shinobi Tools builds Forge, the AI software architect, and Shinobi, the video repurposing tool. Two products, one obsession: skip the busywork.">
+<meta name="description" content="Shinobi Tools builds Forge, the AI software architect, and Shinobi, the video repurposing tool. Two products, one team.">
 <meta property="og:title" content="Shinobi Tools — Forge & Shinobi">
 <meta property="og:description" content="Two tools. One obsession: skip the busywork.">
 <meta property="og:type" content="website">
+<link rel="icon" href="../static/logo-final.png">
+<link rel="apple-touch-icon" href="../static/logo-final.png">
+<meta name="theme-color" content="#0d0d14">
 <style>
 @font-face {
   font-family: 'Molgan';
   src: url('../static/fonts/Molgan-Regular.otf') format('opentype');
-  font-weight: normal; font-style: normal;
+  font-weight: normal;
+  font-style: normal;
 }
   :root {
-    --bg: #0d0d14; --bg-soft: #14141f;
-    --text: #f3f1f7; --muted: #9b96a8;
-    --surface-from: #1c1826; --surface-to: #100d16;
-    --surface-hover-from: #251f35; --surface-hover-to: #150f1e;
-
-    /* Shinobi (video tool) accent */
-    --shinobi-from: #5a41ec; --shinobi-via: #8b5cf6; --shinobi-to: #ff4d5e;
-    /* Forge accent */
-    --forge-from: #6d5bff; --forge-via: #a855f7; --forge-to: #ec4899;
+    color-scheme: dark;
+    --bg: #0d0d14;
+    --bg-soft: #14141f;
+    --panel: #14141f;
+    --panel-2: #1a1a26;
+    --border: #3a393f;
+    --purple: #8b5cf6;
+    --purple-2: #5a41ec;
+    --red: #ff4d5e;
+    --red-soft: #ff6b6b;
+    --charcoal: #20202e;
+    --green: #34d399;
+    --text: #f3f1f7;
+    --muted: #9b96a8;
+    --surface-from: #1c1826;
+    --surface-to: #100d16;
+    --surface-hover-from: #251f35;
+    --surface-hover-to: #150f1e;
   }
   * { box-sizing: border-box; border-radius: 0 !important; }
   html { scroll-behavior: smooth; }
   body {
-    margin: 0; min-height: 100vh;
+    margin: 0;
     font-family: 'Molgan', Arial, Helvetica, sans-serif;
     background:
       radial-gradient(1300px 800px at 12% -15%, rgba(139,92,246,0.22), transparent 60%),
-      radial-gradient(1100px 700px at 105% -5%, rgba(255,77,94,0.14), transparent 55%),
-      radial-gradient(900px 900px at 50% 110%, rgba(236,72,153,0.12), transparent 60%),
+      radial-gradient(1100px 700px at 105% -5%, rgba(255,77,94,0.16), transparent 55%),
+      radial-gradient(900px 900px at 50% 110%, rgba(90,65,236,0.14), transparent 60%),
       var(--bg);
     background-attachment: fixed;
-    color: var(--text); -webkit-font-smoothing: antialiased;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
   }
+
+  /* ===== Grain overlay ===== */
   body::after {
-    content: ''; position: fixed; inset: 0; z-index: 999; pointer-events: none;
-    opacity: 0.05; mix-blend-mode: overlay;
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  h1, h2, h3 {
-    background: linear-gradient(135deg, #ffffff 0%, #ddd6fe 35%, #a78bfa 70%, #8b5cf6 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-
+  /* ===== Nav ===== */
   nav {
-    display: flex; align-items: center; justify-content: center;
-    height: 70px; padding: 0 24px;
-  }
-  .logo { font-weight: 700; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase;
-    display: flex; align-items: center; gap: 10px; -webkit-text-fill-color: var(--text); background: none; }
-  .logo-mark { width: 26px; height: 26px; display: inline-flex; overflow: hidden; }
-  .logo-mark img { width: 100%; height: 100%; object-fit: cover; }
-
-  main { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
-
-  .hero {
-    position: relative; z-index: 1;
-    text-align: center; padding: 64px 24px 56px; max-width: 720px; margin: 0 auto;
-  }
-  .eyebrow {
-    display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted);
-    box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.08);
-    background-image: linear-gradient(160deg, var(--surface-from), var(--surface-to));
-    padding: 4px 12px; margin-bottom: 22px;
-  }
-  .eyebrow .pulse {
-    width: 8px; height: 8px; border-radius: 50% !important;
-    background: #34d399; animation: pulse 2s infinite;
-  }
-  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(52,211,153,.5);} 70% { box-shadow: 0 0 0 8px rgba(52,211,153,0);} 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0);} }
-  h1 { font-size: clamp(30px, 5.5vw, 50px); line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 18px; }
-  .hero .lede {
-    font-size: 17px; color: var(--muted); line-height: 1.7; max-width: 580px; margin: 0 auto;
-    -webkit-text-fill-color: var(--muted);
-  }
-
-  .products {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-    padding: 8px 0 72px;
-  }
-  @media (max-width: 760px) { .products { grid-template-columns: 1fr; } }
-
-  .product-card {
-    background-image: linear-gradient(160deg, var(--surface-from), var(--surface-to));
-    box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.08);
-    padding: 32px;
-    display: flex; flex-direction: column; gap: 18px;
-    transition: box-shadow 0.2s ease;
-  }
-  .product-card:hover {
-    box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.1), 0 0 40px -18px var(--card-glow, #8b5cf6);
-  }
-  .product-mark {
-    width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 22px; color: white; overflow: hidden;
-  }
-  .product-mark img { width: 100%; height: 100%; object-fit: cover; transform: scale(2); }
-  .product-card.forge .product-mark {
-    background-image: linear-gradient(135deg, var(--forge-from), var(--forge-via) 55%, var(--forge-to));
-    box-shadow: 0 8px 30px -8px rgba(168,85,247,0.65);
-    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
-  }
-  .product-card.shinobi .product-mark {
-    background: var(--bg-soft);
-    box-shadow: 0 8px 30px -8px rgba(139,92,246,0.5);
-  }
-  .product-card h2 {
-    font-size: 24px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.5; margin: 0;
-  }
-  .product-card.forge h2 {
-    background: linear-gradient(135deg, var(--forge-from), var(--forge-via) 55%, var(--forge-to));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .product-card.shinobi h2 {
-    background: linear-gradient(135deg, #ffffff 0%, #ddd6fe 35%, #a78bfa 70%, #8b5cf6 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .product-tag {
-    font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;
-    color: var(--muted); margin: 2px 0 0;
-  }
-  .product-desc { font-size: 14.5px; color: var(--muted); line-height: 1.7; margin: 0; }
-  .product-features {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; flex-direction: column; gap: 8px;
-  }
-  .product-features li {
-    font-size: 13.5px; color: var(--text); padding-left: 18px; position: relative; line-height: 1.5;
-  }
-  .product-features li::before {
-    content: ''; position: absolute; left: 0; top: 7px; width: 6px; height: 6px;
-    background-image: linear-gradient(135deg, var(--forge-from), var(--forge-to));
-  }
-  .product-card.shinobi .product-features li::before {
-    background-image: linear-gradient(135deg, var(--shinobi-from), var(--shinobi-to));
-  }
-  .product-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: auto; padding-top: 8px; }
-  .product-cta {
-    font-size: 13.5px; font-weight: 600; padding: 9px 16px;
-    color: white; text-decoration: none; display: inline-block;
-    transition: transform 0.15s ease;
-  }
-  .product-cta:hover { transform: translateY(-1px); }
-  .product-card.forge .product-cta.primary {
-    background-image: linear-gradient(135deg, var(--forge-from), var(--forge-via) 55%, var(--forge-to));
-    box-shadow: 0 8px 24px -10px rgba(168,85,247,0.6);
-  }
-  .product-card.shinobi .product-cta.primary {
-    background: linear-gradient(135deg, var(--shinobi-from), #7a1f3d);
-    box-shadow: 0 8px 24px -10px rgba(139,92,246,0.6);
-  }
-  .product-cta.ghost {
-    color: var(--muted); background-image: linear-gradient(160deg, var(--surface-hover-from), var(--surface-hover-to));
-    box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.06);
-  }
-  .product-cta.ghost:hover { color: var(--text); }
-
-  .about {
-    max-width: 640px; margin: 0 auto 88px; text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 62px;
     padding: 0 24px;
+    background: var(--bg-soft);
+    border-bottom: none;
   }
-  .about h3 { font-size: 22px; margin: 0 0 14px; }
-  .about p { font-size: 15px; color: var(--muted); line-height: 1.8; margin: 0 0 14px; }
+  .logo {
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-mark {
+    width: 28px; height: 28px;
+    display: inline-flex;
+    overflow: hidden;
+  }
+  .logo-mark img { width: 100%; height: 100%; object-fit: cover; transform: scale(2); }
+  .nav-links { display: flex; gap: 20px; align-items: center; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 72px 24px 56px;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .hero .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.08);
+    padding: 4px 12px;
+    margin-bottom: 20px;
+    background-image: linear-gradient(160deg, var(--surface-from), var(--surface-to));
+  }
+  .hero .eyebrow .pulse {
+    width: 8px; height: 8px; border-radius: 50% !important;
+    background: var(--green);
+    box-shadow: 0 0 0 0 rgba(52,211,153, 0.7);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(52,211,153, 0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(52,211,153, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(52,211,153, 0); }
+  }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 56px);
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+  }
+  .hero h1 .accent {
+    position: relative;
+    display: inline-block;
+  }
+  .hero h1 .accent::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 6px;
+    height: 6px;
+    background: var(--red);
+    z-index: -1;
+  }
+  .hero p.sub {
+    font-size: clamp(16px, 2.2vw, 20px);
+    color: var(--muted);
+    max-width: 620px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+  }
+  .hero-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: linear-gradient(135deg, #5a41ec, #7a1f3d);
+    color: white; border: 1px solid transparent;
+    padding: 8px 18px; font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: background 0.15s, border-color 0.15s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--purple-2); }
+  .btn-ghost {
+    background-image: linear-gradient(160deg, var(--surface-from), var(--surface-to));
+    box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.08);
+    border: none;
+    color: var(--text);
+    padding: 8px 18px; font-size: 14px; font-weight: 500;
+    cursor: pointer; font-family: inherit;
+    transition: background-image 0.15s, box-shadow 0.15s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-ghost:hover { background-image: linear-gradient(160deg, var(--surface-hover-from), var(--surface-hover-to)); box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.1), 0 0 20px -8px var(--purple); }
+
+  /* ===== Scroll reveal ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+  /* ===== Purple gradient on all bold headings ===== */
+  h1, h2, h3, h4, .logo {
+    background: linear-gradient(135deg, #ffffff 0%, #ddd6fe 35%, #a78bfa 70%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ===== How it works (steps — scroll-driven) — repurposed to showcase the two products ===== */
+  .steps-wrapper {
+    position: relative; z-index: 1;
+    height: 200vh;
+  }
+  .steps-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+  }
+  .steps {
+    max-width: 680px; width: 100%; padding: 0 24px;
+    display: grid;
+  }
+  .step {
+    grid-area: 1 / 1;
+    display: flex; gap: 24px; align-items: flex-start;
+    padding: 40px;
+    background-image: linear-gradient(160deg, var(--surface-from), var(--surface-to));
+    box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.08), 0 16px 48px rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  .step.is-active { opacity: 1; pointer-events: auto; }
+  .steps-dots {
+    display: flex; justify-content: center; gap: 8px;
+  }
+  .steps-dot {
+    width: 6px; height: 6px; border-radius: 50% !important;
+    background: rgba(255,255,255,0.2);
+    transition: background 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+  }
+  .steps-dot.is-active { background: var(--purple); transform: scale(1.3); }
+  .step-num {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--red);
+    flex-shrink: 0; width: 32px;
+    padding-top: 4px;
+  }
+  .step-body h3 { font-size: 20px; margin: 0 0 10px; font-weight: 700; }
+  .step-body .step-tag {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--red); font-weight: 700; margin: -6px 0 10px;
+  }
+  .step-body p { font-size: 14px; color: var(--muted); margin: 0 0 14px; line-height: 1.7; max-width: 520px; }
+  .step-body .btn-primary { margin-top: 4px; }
+
+  /* ===== Products list (reuses the "pick your blade" list pattern) ===== */
+  .models-section {
+    position: relative; z-index: 1;
+    max-width: 720px; margin: 32px auto 96px; padding: 0 24px;
+  }
+  .models-header { text-align: center; max-width: 620px; margin: 0 auto 16px; }
+  .models-header h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -0.02em; margin: 8px 0 12px; }
+  .models-header p.sub { font-size: clamp(15px, 2vw, 18px); color: var(--muted); line-height: 1.7; margin: 0; }
+  .models-list { display: flex; flex-direction: column; }
+  .model-row {
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+  .model-row:last-child { border-bottom: none; }
+  .model-row-name { display: flex; align-items: center; gap: 8px; }
+  .model-row-name h3 { font-size: 19px; margin: 0; font-weight: 700; }
+  .model-card-badge {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    color: var(--green); background: rgba(52,211,153,0.15);
+    padding: 1px 6px;
+  }
+  .model-row-tier {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--red); font-weight: 700;
+    margin: 6px 0 8px;
+  }
+  .model-row-desc { font-size: 14px; color: var(--muted); margin: 0; line-height: 1.7; max-width: 380px; }
 
   footer {
-    text-align: center; color: var(--muted); font-size: 12.5px;
-    padding: 32px 24px 56px; position: relative; z-index: 1;
+    text-align: center; color: var(--muted); font-size: 13px;
+    padding: 40px 24px 60px; position: relative; z-index: 1;
   }
-  footer .footer-links { display: flex; gap: 18px; justify-content: center; margin-bottom: 12px; }
-  footer a { color: var(--muted); text-decoration: none; }
+  footer a { color: var(--muted); }
   footer a:hover { color: var(--text); }
+
+  /* ===== Splash screen ===== */
+  #splash {
+    position: fixed; inset: 0; z-index: 99999;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.7s ease;
+  }
+  #splash.out { opacity: 0; pointer-events: none; }
+  #splash-stage {
+    display: grid;
+    place-items: center;
+    filter: drop-shadow(0 0 40px rgba(139,92,246,0.65));
+  }
+  #splash-s-wrap {
+    grid-area: 1 / 1;
+    position: relative;
+    width: min(38vw, 200px);
+    aspect-ratio: 1;
+    clip-path: polygon(0% 0%, 0% 0%, -25% 100%, -25% 100%);
+    animation: brush-reveal 1.9s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
+  }
+  @keyframes brush-reveal {
+    0%   { clip-path: polygon(0% 0%,   0%   0%, -25% 100%, -25% 100%); }
+    100% { clip-path: polygon(0% 0%, 125%   0%, 100% 100%, -25% 100%); }
+  }
+  .s-half {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: contain;
+  }
+  .s-top { clip-path: inset(0 0 50% 0); }
+  .s-bot { clip-path: inset(50% 0 0 0); }
+  #splash-slash {
+    position: absolute;
+    top: 50%; left: -20%; width: 140%; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95) 30%, white 50%, rgba(255,255,255,0.95) 70%, transparent);
+    transform: rotate(-6deg) translateX(-115%);
+    pointer-events: none; z-index: 10; opacity: 0;
+  }
+  #splash-s-wrap.is-cutting #splash-slash {
+    animation: splash-slash-sweep 0.4s ease-out forwards;
+  }
+  #splash-s-wrap.is-cutting .s-top {
+    animation: s-top-exit 0.55s 0.28s ease forwards;
+  }
+  #splash-s-wrap.is-cutting .s-bot {
+    animation: s-bot-exit 0.55s 0.28s ease forwards;
+  }
+  @keyframes splash-slash-sweep {
+    0%   { opacity: 0; transform: rotate(-6deg) translateX(-115%); }
+    15%  { opacity: 1; }
+    85%  { opacity: 1; }
+    100% { opacity: 0; transform: rotate(-6deg) translateX(115%); }
+  }
+  @keyframes s-top-exit {
+    0%   { clip-path: inset(0 0 50% 0); transform: translateY(0);    opacity: 1; }
+    100% { clip-path: inset(0 0 50% 0); transform: translateY(-70px); opacity: 0; }
+  }
+  @keyframes s-bot-exit {
+    0%   { clip-path: inset(50% 0 0 0); transform: translateY(0);   opacity: 1; }
+    100% { clip-path: inset(50% 0 0 0); transform: translateY(70px); opacity: 0; }
+  }
+  #splash-wordmark {
+    grid-area: 1 / 1;
+    font-family: 'Molgan', Arial, sans-serif;
+    font-size: clamp(30px, 6.5vw, 60px);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    background: linear-gradient(135deg, #ffffff 0%, #e9e4ff 40%, #c4b5fd 75%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    white-space: nowrap;
+  }
+  #splash-wordmark.is-visible { opacity: 1; transform: translateY(0); }
 </style>
 </head>
 <body>
 
+  <div id="splash">
+    <div id="splash-stage">
+      <div id="splash-s-wrap">
+        <img class="s-half s-top" src="../static/logo-final.png" alt="">
+        <img class="s-half s-bot" src="../static/logo-final.png" alt="">
+        <div id="splash-slash"></div>
+      </div>
+      <div id="splash-wordmark">SHINOBI TOOLS</div>
+    </div>
+  </div>
+
   <nav>
     <div class="logo"><span class="logo-mark"><img src="../static/logo-final.png" alt="Shinobi Tools"></span> Shinobi Tools</div>
+    <div class="nav-links">
+      <a href="#products">Products</a>
+      <a href="https://github.com/emilio-martin1208/forge" target="_blank" rel="noopener noreferrer">Forge</a>
+      <a href="../static/index.html">Shinobi</a>
+    </div>
   </nav>
 
-  <main>
-    <section class="hero">
-      <div class="eyebrow"><span class="pulse"></span> Two products, one team</div>
-      <h1>Two tools. One obsession: skip the busywork.</h1>
-      <p class="lede">Shinobi Tools builds software that does the deep, repetitive work — reading a whole codebase, watching a whole video — so the interesting part is what's left for you.</p>
-    </section>
+  <section class="hero">
+    <div class="eyebrow"><span class="pulse"></span> Two products, one team</div>
+    <h1>Two tools.<br><span class="accent">One obsession: skip the busywork.</span></h1>
+    <p class="sub">Shinobi Tools builds software that does the deep, repetitive work — reading a whole codebase, watching a whole video — so the interesting part is what's left for you.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="#products">See both products</a>
+      <button class="btn-ghost" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">How they're alike</button>
+    </div>
+  </section>
 
-    <section class="products">
-      <article class="product-card forge" style="--card-glow: #a855f7">
-        <div class="product-mark">F</div>
+  <div class="steps-wrapper" id="how-it-works">
+    <div class="steps-sticky">
+      <div class="steps" id="stepsCarousel">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <div class="step-tag">The AI Software Architect</div>
+            <h3>Forge</h3>
+            <p>Connect a GitHub repo and Forge builds a deterministic understanding of it — languages, frameworks, routes, health — then generates documentation and grounded context packages for coding agents. Nothing hallucinated, everything derived from what's actually in the repo.</p>
+            <a class="btn-primary" href="https://github.com/emilio-martin1208/forge" target="_blank" rel="noopener noreferrer">View Forge →</a>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <div class="step-tag">Video → Clips, Automatically</div>
+            <h3>Shinobi.</h3>
+            <p>One long-form video in, up to ten ready-to-post vertical clips out. Shinobi transcribes, finds your best moments, cuts the dead air, reformats for vertical, burns in subtitles, and writes the copy — automatically.</p>
+            <a class="btn-primary" href="../static/index.html">Try Shinobi →</a>
+          </div>
+        </div>
+      </div>
+      <div class="steps-dots" id="stepsDots"></div>
+    </div>
+  </div>
+
+  <div class="models-section" id="products">
+    <div class="models-header">
+      <div class="eyebrow"><span class="pulse"></span> Why one team, two products</div>
+      <h2>Same bet, different domain</h2>
+      <p class="sub">Forge and Shinobi look nothing alike on the surface — one reads codebases, the other reads video — but they're the same bet: point an AI at something long and unstructured, and have it come back with the part that actually matters.</p>
+    </div>
+    <div class="models-list">
+      <div class="model-row reveal">
         <div>
-          <h2>Forge</h2>
-          <p class="product-tag">The AI Software Architect</p>
+          <div class="model-row-name">
+            <h3>Forge</h3>
+          </div>
+          <div class="model-row-tier">In active daily use</div>
+          <p class="model-row-desc">The AI software architect — repo intelligence, generated docs, grounded context packages for coding agents.</p>
         </div>
-        <p class="product-desc">Connect a GitHub repo and Forge builds a deterministic understanding of it — languages, frameworks, routes, health — then generates documentation and grounded context packages for coding agents. Nothing hallucinated, everything derived from what's actually in the repo.</p>
-        <ul class="product-features">
-          <li>Repository Intelligence Engine + health dashboard</li>
-          <li>README generation grounded in real code</li>
-          <li>Context packages for Claude Code, Cursor, Codex</li>
-          <li>GitHub sync — PRs, issues, releases, AI code review</li>
-        </ul>
-        <div class="product-actions">
-          <a class="product-cta primary" href="https://github.com/emilio-martin1208/forge" target="_blank" rel="noopener noreferrer">View Forge →</a>
-        </div>
-      </article>
-
-      <article class="product-card shinobi" style="--card-glow: #8b5cf6">
-        <div class="product-mark"><img src="../static/logo-final.png" alt="Shinobi"></div>
+        <a class="btn-ghost" href="https://github.com/emilio-martin1208/forge" target="_blank" rel="noopener noreferrer">GitHub →</a>
+      </div>
+      <div class="model-row reveal">
         <div>
-          <h2>Shinobi.</h2>
-          <p class="product-tag">Video → Clips, Automatically</p>
+          <div class="model-row-name">
+            <h3>Shinobi</h3>
+            <span class="model-card-badge">Live</span>
+          </div>
+          <div class="model-row-tier">Taking early users</div>
+          <p class="model-row-desc">Video repurposing — one long video in, up to ten platform-ready vertical clips out.</p>
         </div>
-        <p class="product-desc">One long-form video in, up to ten ready-to-post vertical clips out. Shinobi transcribes, finds your best moments, cuts the dead air, reformats for vertical, burns in subtitles, and writes the copy — automatically.</p>
-        <ul class="product-features">
-          <li>Claude-scored moment detection (hook, payoff, standalone-ness)</li>
-          <li>Face-aware 9:16 reformatting + silence removal</li>
-          <li>Animated word-by-word subtitles</li>
-          <li>Per-clip titles, descriptions, and tags</li>
-        </ul>
-        <div class="product-actions">
-          <a class="product-cta primary" href="../static/index.html">Try Shinobi →</a>
-          <a class="product-cta ghost" href="../waitlist/index.html">Join the waitlist</a>
-        </div>
-      </article>
-    </section>
-
-    <section class="about">
-      <h3>Why one team, two products</h3>
-      <p>Forge and Shinobi look nothing alike on the surface — one reads codebases, the other reads video — but they're the same bet: point an AI at something long and unstructured, and have it come back with the part that actually matters.</p>
-      <p>Both are early. Forge is in active daily use on its own codebase; Shinobi is live and taking early users.</p>
-    </section>
-  </main>
+        <a class="btn-ghost" href="../static/index.html">Try it →</a>
+      </div>
+    </div>
+  </div>
 
   <footer>
-    <div class="footer-links">
-      <a href="https://github.com/emilio-martin1208/forge" target="_blank" rel="noopener noreferrer">Forge on GitHub</a>
-      <a href="https://github.com/emilio-martin1208/shinobi" target="_blank" rel="noopener noreferrer">Shinobi on GitHub</a>
-    </div>
-    Shinobi Tools.
+    Shinobi Tools. &nbsp;·&nbsp;
+    <a href="https://github.com/emilio-martin1208/forge" target="_blank" rel="noopener noreferrer">Forge on GitHub</a> &nbsp;·&nbsp;
+    <a href="https://github.com/emilio-martin1208/shinobi" target="_blank" rel="noopener noreferrer">Shinobi on GitHub</a>
   </footer>
 
+<script>
+  // Splash screen
+  (function () {
+    var splash    = document.getElementById('splash');
+    var sWrap     = document.getElementById('splash-s-wrap');
+    var wordmark  = document.getElementById('splash-wordmark');
+    if (!splash) return;
+    setTimeout(function () {
+      sWrap.classList.add('is-cutting');
+      setTimeout(function () { wordmark.classList.add('is-visible'); }, 650);
+    }, 2250);
+    setTimeout(function () {
+      splash.classList.add('out');
+      setTimeout(function () { splash.style.display = 'none'; }, 750);
+    }, 4800);
+  })();
+
+  (function () {
+    var stepsWrapperEl = document.getElementById('how-it-works');
+    var stepsCarouselEl = document.getElementById('stepsCarousel');
+    var dotsEl = document.getElementById('stepsDots');
+    if (stepsWrapperEl && stepsCarouselEl) {
+      var stepCards = Array.prototype.slice.call(stepsCarouselEl.querySelectorAll('.step'));
+      var dots = [];
+      var currentStep = -1;
+
+      stepCards.forEach(function (_, i) {
+        var d = document.createElement('div');
+        d.className = 'steps-dot';
+        dotsEl.appendChild(d);
+        dots.push(d);
+      });
+
+      function showStep(idx) {
+        if (idx === currentStep) return;
+        if (currentStep >= 0) {
+          stepCards[currentStep].classList.remove('is-active');
+          dots[currentStep].classList.remove('is-active');
+        }
+        currentStep = idx;
+        stepCards[idx].classList.add('is-active');
+        dots[idx].classList.add('is-active');
+      }
+
+      function onScroll() {
+        var rect = stepsWrapperEl.getBoundingClientRect();
+        var scrolled = -rect.top;
+        var scrollRange = stepsWrapperEl.offsetHeight - window.innerHeight;
+        if (scrolled < 0) { showStep(0); return; }
+        if (scrolled > scrollRange) { showStep(stepCards.length - 1); return; }
+        var idx = Math.min(Math.floor((scrolled / scrollRange) * stepCards.length), stepCards.length - 1);
+        showStep(idx);
+      }
+
+      showStep(0);
+      window.addEventListener('scroll', onScroll, { passive: true });
+    }
+
+    var allReveal = document.querySelectorAll('.reveal');
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    allReveal.forEach(function (el) { observer.observe(el); });
+  })();
+</script>
 </body>
 </html>
